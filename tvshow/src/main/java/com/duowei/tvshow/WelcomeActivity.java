@@ -163,8 +163,8 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
 //                    startDownLoad("http://7xpj8w.com1.z0.glb.clouddn.com/video12.zip");
 //                    Http_File(down_data);
 //                    startDownLoad(down_data);
-//                    VersionUpdate.checkVersion(WelcomeActivity.this,down_data);
-                    VersionUpdate.checkVersion(WelcomeActivity.this,"http://7xpj8w.com1.z0.glb.clouddn.com/video12.zip");
+                    VersionUpdate.checkVersion(WelcomeActivity.this,down_data);
+//                    VersionUpdate.checkVersion(WelcomeActivity.this,"http://7xpj8w.com1.z0.glb.clouddn.com/video12.zip");
                 }
             }
         });
