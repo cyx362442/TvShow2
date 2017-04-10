@@ -20,7 +20,6 @@ public class VideoFullActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_full);
-        EventBus.getDefault().register(this);
         Intent intent = getIntent();
         if(intent==null){
             Toast.makeText(this,"找到不到视频",Toast.LENGTH_LONG).show();
@@ -43,11 +42,5 @@ public class VideoFullActivity extends AppCompatActivity{
     protected void onStop() {
         super.onStop();
         JCVideoPlayer.releaseAllVideos();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 }
