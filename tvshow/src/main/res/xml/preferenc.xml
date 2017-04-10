@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="设置">
+        <EditTextPreference
+            android:key="edittext_key1"
+            android:summary="ai.wxdw.top"
+            android:inputType="textUri"
+            android:title="服务器地址" />
+        <EditTextPreference
+            android:key="edittext_key2"
+            android:summary="edit summary"
+            android:numeric="integer"
+            android:title="微信ID" />
+        <EditTextPreference
+            android:key="edittext_key3"
+            android:summary="edit summary"
+            android:numeric="integer"
+            android:title="门店ID" />
+        <ListPreference
+            android:key="list_key"
+            android:title="电视区号"
+            android:summary="list_summary"
+            android:entries="@array/list_preference"
+            android:entryValues="@array/list_preference"
+            android:dialogTitle="电视区号" />
+    </PreferenceCategory>
+    <PreferenceScreen
+
+        android:key="dect_settings"
+        android:title="确定"
+        android:summary="(请确定信息填写完整、正确)" >
+    </PreferenceScreen>
+    <!--<PreferenceCategory android:title="Second Category">-->
+    <!--<EditTextPreference-->
+        <!--android:key="edittext_key"-->
+        <!--android:summary="edit summary"-->
+        <!--android:title="edit title" />-->
+    <!--<CheckBoxPreference-->
+        <!--android:key="checkbox_key"-->
+        <!--android:summary="checkbox summary"-->
+        <!--android:title="checkbox title"-->
+        <!--/>-->
+    <!--<EditTextPreference-->
+        <!--android:key="num_key"-->
+        <!--android:defaultValue="0"-->
+        <!--android:summary="edit summary"-->
+        <!--android:numeric="integer"-->
+        <!--android:title="input number" />-->
+    <!--</PreferenceCategory>-->
+</PreferenceScreen>

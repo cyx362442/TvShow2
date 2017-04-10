@@ -1,0 +1,32 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="com.duowei.tvshow.fragment.ImageFragment">
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <LinearLayout
+        android:layout_marginTop="145dp"
+        android:gravity="center_vertical"
+        android:background="#66000000"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="45dp">
+        <TextView
+            android:id="@+id/title"
+            android:textColor="#ffffff"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:lineSpacingMultiplier="1.2"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+</FrameLayout>

@@ -1,0 +1,26 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/relative"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:descendantFocusability="afterDescendants"
+                android:gravity="center"
+    >
+
+    <ImageView
+        android:id="@+id/img_photo"
+        android:layout_width="320dp"
+        android:layout_height="200dp"
+        android:layout_margin="10dp"
+        android:layout_centerInParent="true"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/bg"
+        />
+
+    <ImageView
+        android:id="@+id/img_dagou"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/signred"
+        android:visibility="gone"/>
+</RelativeLayout>
