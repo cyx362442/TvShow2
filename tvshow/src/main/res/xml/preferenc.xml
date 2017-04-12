@@ -23,9 +23,14 @@
             android:entries="@array/list_preference"
             android:entryValues="@array/list_preference"
             android:dialogTitle="电视区号" />
+        <CheckBoxPreference
+            android:key="checkbox_key"
+            android:defaultValue="true"
+            android:summary="默认开启"
+            android:title="开机自启动"
+            />
     </PreferenceCategory>
     <PreferenceScreen
-
         android:key="dect_settings"
         android:title="确定"
         android:summary="(请确定信息填写完整、正确)" >
@@ -35,11 +40,6 @@
         <!--android:key="edittext_key"-->
         <!--android:summary="edit summary"-->
         <!--android:title="edit title" />-->
-    <!--<CheckBoxPreference-->
-        <!--android:key="checkbox_key"-->
-        <!--android:summary="checkbox summary"-->
-        <!--android:title="checkbox title"-->
-        <!--/>-->
     <!--<EditTextPreference-->
         <!--android:key="num_key"-->
         <!--android:defaultValue="0"-->

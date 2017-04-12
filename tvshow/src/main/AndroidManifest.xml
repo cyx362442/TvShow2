@@ -7,11 +7,13 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!-- VISIBILITY_HIDDEN表示不显示任何通知栏提示的权限 -->
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>
     <!-- DownloadManager -->
     <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/>
+
     <application
         android:name=".application.MyApplication"
         android:allowBackup="true"
@@ -50,11 +52,13 @@
             android:screenOrientation="landscape">
         </activity>
 
-        <service
+ <!--       <service
             android:name=".service.BroadService"
+            android:label="AutoStartService"
             android:enabled="true"
-            android:exported="true">
-        </service>
+            android:exported="true"
+            android:process=":remote">
+        </service>-->
 
         <activity
             android:name=".ImageFullActivity"
@@ -72,6 +76,13 @@
             android:enabled="true"
             android:exported="true">
         </service>
+
+        <!-- 开机自启动广播接受 -->
+        <receiver android:name=".broadcast.AutoStartBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

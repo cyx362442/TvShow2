@@ -1,7 +1,9 @@
 package com.duowei.tvshow;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Environment;
@@ -59,7 +61,6 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
                 @Override
                 public void onProgress(float fraction) {
                     bnp.setProgress((int)(fraction * 100));
-
                     //判断是否真的下载完成进行安装了，以及是否注册绑定过服务
                     if (fraction == DownloadService.UNBIND_SERVICE && isBindService) {
                         mLl_loading.setVisibility(View.GONE);
@@ -76,11 +77,11 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
         }
     };
     private LinearLayout mLl_loading;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+
         bnp = (NumberProgressBar) findViewById(R.id.number_bar);
         mLl_loading = (LinearLayout) findViewById(R.id.ll_loading);
         if(!Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){

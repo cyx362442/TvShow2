@@ -58,6 +58,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
         mEtPreference1.setSummary(url);
         mEtPreference2.setSummary(sharedPreferences.getString("edittext_key2", ""));
         mEtPreference3.setSummary(sharedPreferences.getString("edittext_key3", ""));
+        mCheckPreference.setChecked(sharedPreferences.getBoolean("checkbox_key",true));
         // Set up a listener whenever a key changes
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
@@ -84,9 +85,12 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
         }else if(key.equals("edittext_key3")){//门店ID
             mEtPreference3.setSummary(sharedPreferences.getString(key, "20"));
             mEdit.putString("storeid",sharedPreferences.getString(key, "20"));
-        } else if(key.equals(Consts.LIST_KEY)) {
+        } else if(key.equals(Consts.LIST_KEY)) {//电视区号
             mListPreference.setSummary(sharedPreferences.getString(key, ""));
             mEdit.putString("zoneNum",sharedPreferences.getString(key, ""));
+        }else if(key.equals(Consts.CHECKOUT_KEY)){//是否开机自启动
+            mCheckPreference.setChecked(sharedPreferences.getBoolean(key,true));
+            mEdit.putBoolean(Consts.CHECKOUT_KEY,sharedPreferences.getBoolean(key,true));
         }
         mEdit.commit();
     }
