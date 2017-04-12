@@ -45,6 +45,7 @@ public class ShowActivity extends AppCompatActivity {
         mId = new int[]{R.id.frame01,R.id.frame02,R.id.frame03,
                 R.id.frame04,R.id.frame05,R.id.frame06,
                 R.id.frame07,R.id.frame08,R.id.frame09,};
+        startShow();
     }
 
     @Override
@@ -76,43 +77,47 @@ public class ShowActivity extends AppCompatActivity {
               }
             String action = intent.getAction();
             if(action.equals(ConstsCode.ACTION_START_HEART)){
-                List<OneDataBean> list = DataSupport.findAll(OneDataBean.class);
-                for(OneDataBean bean:list){
-                    String time = bean.time.trim();
-                    boolean newTime = isNewTime(time);
-                    if(newTime==true){//发现新的时间段
-                        JCVideoPlayer.releaseAllVideos();
-                        removeFragment();//删除上次视频
-                            mFile=new File(FileDir.getVideoName()+bean.image_name);//拼接图片路径
-                            if(mFile.exists()){//文件存在则读取
-                                Picasso.with(ShowActivity.this).load(mFile).fit().centerInside().into(mImageView);
+                startShow();
+            }
+        }
+    }
+
+    private void startShow() {
+        List<OneDataBean> list = DataSupport.findAll(OneDataBean.class);
+        for(OneDataBean bean:list){
+            String time = bean.time.trim();
+            boolean newTime = isNewTime(time);
+            if(newTime==true){//发现新的时间段
+                JCVideoPlayer.releaseAllVideos();
+                removeFragment();//删除上次视频
+                    mFile=new File(FileDir.getVideoName()+bean.image_name);//拼接图片路径
+                    if(mFile.exists()){//文件存在则读取
+                        Picasso.with(ShowActivity.this).load(mFile).fit().centerInside().into(mImageView);
 //                                Glide.with(ShowActivity.this).load(mFile).fitCenter().placeholder(R.mipmap.bg).into(mImageView);
-                            }else{//不存在设一张默认的图片
-                                Picasso.with(ShowActivity.this).load(R.mipmap.bg).fit().centerInside().into(mImageView);
+                    }else{//不存在设一张默认的图片
+                        Picasso.with(ShowActivity.this).load(R.mipmap.bg).fit().centerInside().into(mImageView);
 //                                Glide.with(ShowActivity.this).load(mFile).fitCenter().placeholder(R.mipmap.bg).into(mImageView);
-                            }
-                            /**视频文件存在*/
-                            if(!bean.video_name.equals("null")){
-                                mFragment=new VideoFragment();
-                                int place = Integer.parseInt(bean.video_palce);//视频位置
-                                Bundle bundle = new Bundle();
-                                bundle.putString("videoname",bean.video_name);
-                                mFragment.setArguments(bundle);
-                                FragmentManager fragmentManager = getSupportFragmentManager();
-                                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                                transaction.replace(mId[place-1],mFragment);
-                                transaction.commit();
-                            }
-                            if(!TextUtils.isEmpty(bean.ad)){//滚动文字
-                                mTsfv.setMove(true);
-                                mTsfv.setContent("    "+bean.ad);
-                            }else{
-                                mTsfv.setMove(false);
-                                mTsfv.setContent("");
-                            }
-                        break;
                     }
-                }
+                    /**视频文件存在*/
+                    if(!bean.video_name.equals("null")){
+                        mFragment=new VideoFragment();
+                        int place = Integer.parseInt(bean.video_palce);//视频位置
+                        Bundle bundle = new Bundle();
+                        bundle.putString("videoname",bean.video_name);
+                        mFragment.setArguments(bundle);
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        FragmentTransaction transaction = fragmentManager.beginTransaction();
+                        transaction.replace(mId[place-1],mFragment);
+                        transaction.commit();
+                    }
+                    if(!TextUtils.isEmpty(bean.ad)){//滚动文字
+                        mTsfv.setMove(true);
+                        mTsfv.setContent("    "+bean.ad);
+                    }else{
+                        mTsfv.setMove(false);
+                        mTsfv.setContent("");
+                    }
+                break;
             }
         }
     }

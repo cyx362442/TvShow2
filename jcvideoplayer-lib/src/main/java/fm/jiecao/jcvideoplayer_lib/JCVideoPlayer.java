@@ -229,7 +229,7 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
         tvTitle.setText(title);
         ivThumb.setVisibility(View.VISIBLE);
         ivStart.setVisibility(View.VISIBLE);
-        llBottomControl.setVisibility(View.INVISIBLE);
+//        llBottomControl.setVisibility(View.INVISIBLE);
         pbBottom.setVisibility(View.VISIBLE);
         CURRENT_STATE = CURRENT_STATE_NORMAL;
         setTitleVisibility(View.VISIBLE);
@@ -259,7 +259,7 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
         } else if (CURRENT_STATE == CURRENT_STATE_PLAYING) {
             updateStartImage();
             ivStart.setVisibility(View.VISIBLE);
-//            llBottomControl.setVisibility(View.VISIBLE);
+            llBottomControl.setVisibility(View.VISIBLE);
             pbBottom.setVisibility(View.INVISIBLE);
             setTitleVisibility(View.VISIBLE);
             ivThumb.setVisibility(View.INVISIBLE);
@@ -270,7 +270,7 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
         } else if (CURRENT_STATE == CURRENT_STATE_PAUSE) {
             updateStartImage();
             ivStart.setVisibility(View.VISIBLE);
-//            llBottomControl.setVisibility(View.VISIBLE);
+            llBottomControl.setVisibility(View.VISIBLE);
             pbBottom.setVisibility(View.INVISIBLE);
             setTitleVisibility(View.VISIBLE);
             ivThumb.setVisibility(View.INVISIBLE);

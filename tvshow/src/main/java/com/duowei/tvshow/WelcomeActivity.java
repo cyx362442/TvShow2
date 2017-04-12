@@ -117,7 +117,7 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(WelcomeActivity.this,"网络连接失败",Toast.LENGTH_LONG).show();
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(3000);
                     num++;
                     if(num<3){
                         Http_contents();
@@ -158,13 +158,12 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
                             }
                         }
                     }
-                    Log.e("=====",down_data);
-//                    Http_File("http://7xpj8w.com1.z0.glb.clouddn.com/video12.zip");
-//                    startDownLoad("http://7xpj8w.com1.z0.glb.clouddn.com/video12.zip");
+//                    Http_File("http://7xpj8w.com1.z0.glb.clouddn.com/video13.zip");
+//                    startDownLoad("http://7xpj8w.com1.z0.glb.clouddn.com/video13.zip");
 //                    Http_File(down_data);
 //                    startDownLoad(down_data);
                     VersionUpdate.checkVersion(WelcomeActivity.this,down_data);
-//                    VersionUpdate.checkVersion(WelcomeActivity.this,"http://7xpj8w.com1.z0.glb.clouddn.com/video12.zip");
+//                    VersionUpdate.checkVersion(WelcomeActivity.this,"http://7xpj8w.com1.z0.glb.clouddn.com/video13.zip");
                 }
             }
         });
