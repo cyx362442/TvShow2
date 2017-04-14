@@ -1,9 +1,7 @@
 package com.duowei.tvshow;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Environment;
@@ -150,21 +148,22 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
                             for(int j=0;j<one_data.size();j++){
                                 String time = one_data.get(j).getTime();//起始跟结束时间
                                 String ad = one_data.get(j).getAd();//动态广告词
+                                String color = one_data.get(j).getColor();
                                 String video_palce = one_data.get(j).getVideo_palce( );//视频的位置
                                 String image_name = one_data.get(j).getFile_name().getImage_name();//图片名称
                                 String video_name = one_data.get(j).getFile_name().getVideo_name();//视频名称
                                 /**插入数据库*/
-                                OneDataBean oneDataBean = new OneDataBean(time, ad, video_palce, image_name, video_name);
+                                OneDataBean oneDataBean = new OneDataBean(time, ad, video_palce, image_name, video_name,color);
                                 oneDataBean.save();
                             }
                         }
                     }
-//                    Http_File("http://7xpj8w.com1.z0.glb.clouddn.com/video13.zip");
-//                    startDownLoad("http://7xpj8w.com1.z0.glb.clouddn.com/video13.zip");
-//                    Http_File(down_data);
+//                    Http_File("http://7xpj8w.com1.z0.glb.clouddn.com/video15.zip");
+//                    startDownLoad("http://7xpj8w.com1.z0.glb.clouddn.com/video15.zip");
+                    Http_File(down_data);
 //                    startDownLoad(down_data);
-                    VersionUpdate.checkVersion(WelcomeActivity.this,down_data);
-//                    VersionUpdate.checkVersion(WelcomeActivity.this,"http://7xpj8w.com1.z0.glb.clouddn.com/video13.zip");
+//                    VersionUpdate.checkVersion(WelcomeActivity.this,down_data);
+//                    VersionUpdate.checkVersion(WelcomeActivity.this,"http://7xpj8w.com1.z0.glb.clouddn.com/video15.zip");
                 }
             }
         });

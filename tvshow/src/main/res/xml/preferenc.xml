@@ -28,6 +28,7 @@
             android:defaultValue="true"
             android:summary="默认开启"
             android:title="开机自启动"
+            android:visibility="gone"
             />
     </PreferenceCategory>
     <PreferenceScreen

@@ -110,12 +110,19 @@ public class ShowActivity extends AppCompatActivity {
                         transaction.replace(mId[place-1],mFragment);
                         transaction.commit();
                     }
-                    if(!TextUtils.isEmpty(bean.ad)){//滚动文字
+                    /**滚动文字内容*/
+                    if(!TextUtils.isEmpty(bean.ad)){
                         mTsfv.setMove(true);
                         mTsfv.setContent("    "+bean.ad);
                     }else{
                         mTsfv.setMove(false);
                         mTsfv.setContent("");
+                    }
+                    /**滚动文字颜色*/
+                    if(!TextUtils.isEmpty(bean.color)){
+                        mTsfv.setFontColor(bean.color);
+                    }else{
+                        mTsfv.setFontColor("#ffffff");
                     }
                 break;
             }

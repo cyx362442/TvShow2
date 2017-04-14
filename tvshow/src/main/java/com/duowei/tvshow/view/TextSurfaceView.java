@@ -57,7 +57,7 @@ public class TextSurfaceView extends SurfaceView implements Callback, Runnable{
     /**
      * 字幕背景色
      * */
-    private String             bgColor = "#e0018B7E";
+    private String             bgColor = "#00000000";
 
     /**
      * 字幕透明度　默认：60

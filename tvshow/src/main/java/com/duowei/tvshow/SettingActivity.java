@@ -54,7 +54,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
         mListPreference.setSummary(sharedPreferences.getString(Consts.LIST_KEY, ""));
 
         String edittext_key1 = sharedPreferences.getString("edittext_key1", "");
-        String url= TextUtils.isEmpty(edittext_key1)?"ai.wxdw.top":edittext_key1;
+        String url= TextUtils.isEmpty(edittext_key1)?"ad.wxdw.top":edittext_key1;
         mEtPreference1.setSummary(url);
         mEtPreference2.setSummary(sharedPreferences.getString("edittext_key2", ""));
         mEtPreference3.setSummary(sharedPreferences.getString("edittext_key3", ""));
@@ -77,7 +77,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
 //            mEdit.putString("wurl",sharedPreferences.getString(key, "20"));
         }else if(key.equals("edittext_key2")){//微信ID
             String edittext_key1 = sharedPreferences.getString("edittext_key1", "");
-            String url= TextUtils.isEmpty(edittext_key1)?"ai.wxdw.top":edittext_key1;
+            String url= TextUtils.isEmpty(edittext_key1)?"ad.wxdw.top":edittext_key1;
             mEdit.putString("wurl",url);
 
             mEtPreference2.setSummary(sharedPreferences.getString(key, "20"));

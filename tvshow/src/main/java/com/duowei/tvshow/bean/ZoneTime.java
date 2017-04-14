@@ -95,6 +95,15 @@ public class ZoneTime {
             private String ad;
             private String video_palce;
             private FileNameBean file_name;
+            private String color;
+
+            public String getColor() {
+                return color;
+            }
+
+            public void setColor(String color) {
+                this.color = color;
+            }
 
             public String getTime() {
                 return time;
@@ -133,10 +142,8 @@ public class ZoneTime {
                  * image_name : 1489040365201.png
                  * video_name : null
                  */
-
                 private String image_name;
                 private String video_name;
-
                 public String getImage_name() {
                     return image_name;
                 }

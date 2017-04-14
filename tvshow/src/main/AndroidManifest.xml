@@ -52,13 +52,13 @@
             android:screenOrientation="landscape">
         </activity>
 
- <!--       <service
+        <service
             android:name=".service.BroadService"
             android:label="AutoStartService"
             android:enabled="true"
             android:exported="true"
             android:process=":remote">
-        </service>-->
+        </service>
 
         <activity
             android:name=".ImageFullActivity"
