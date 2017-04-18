@@ -2,7 +2,7 @@
 <litepal>
     <dbname value="tvshow" ></dbname>
 
-    <version value="16" ></version>
+    <version value="17" ></version>
     <list>
         <mapping class="com.duowei.tvshow.bean.CityCodes"></mapping>
     </list>

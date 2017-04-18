@@ -90,7 +90,7 @@ public class ShowActivity extends AppCompatActivity {
             if(newTime==true){//发现新的时间段
                 JCVideoPlayer.releaseAllVideos();
                 removeFragment();//删除上次视频
-                    mFile=new File(FileDir.getVideoName()+bean.image_name);//拼接图片路径
+                    mFile=new File(FileDir.getDir()+bean.image_name);//拼接图片路径
                     if(mFile.exists()){//文件存在则读取
                         Picasso.with(ShowActivity.this).load(mFile).fit().centerInside().into(mImageView);
 //                                Glide.with(ShowActivity.this).load(mFile).fitCenter().placeholder(R.mipmap.bg).into(mImageView);

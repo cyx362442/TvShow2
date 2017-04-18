@@ -3,6 +3,7 @@ package com.duowei.tvshow.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
@@ -155,7 +156,8 @@ public class TextSurfaceView extends SurfaceView implements Callback, Runnable{
         this.isMove = move;
         setLoop(isMove());
     }
-    public void surfaceChanged(SurfaceHolder holder, int format, int width,int height) {}
+
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
 
     public void surfaceCreated(SurfaceHolder holder) {
 
@@ -194,6 +196,7 @@ public class TextSurfaceView extends SurfaceView implements Callback, Runnable{
     private void draw(){
         //锁定画布
         Canvas canvas = mSurfaceHolder.lockCanvas();
+
         if(mSurfaceHolder == null || canvas == null){
             return;
         }

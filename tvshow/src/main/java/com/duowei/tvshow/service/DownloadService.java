@@ -14,10 +14,15 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.util.Log;
 
+import com.duowei.tvshow.bean.LoadFile;
 import com.duowei.tvshow.contact.FileDir;
+import com.nostra13.universalimageloader.utils.L;
 
 import java.io.File;
+import java.io.Serializable;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +30,9 @@ import java.util.concurrent.TimeUnit;
 public class DownloadService extends Service {
     public static final int HANDLE_DOWNLOAD = 0x001;
     public static final String BUNDLE_KEY_DOWNLOAD_URL = "download_url";
+    public static final  String BUNDLE_KEY_DOWNLOAD_NAME="download_name";
+    public static final String BUNDLE_KEY_DOWNLOAD_FILE="download_FILE";
+
     public static final float UNBIND_SERVICE = 2.0F;
 
     private Activity activity;
@@ -37,6 +45,7 @@ public class DownloadService extends Service {
     //下载任务ID
     private long downloadId;
     private String downloadUrl;
+    private String downloadName;
     private OnProgressListener onProgressListener;
 
     public Handler downLoadHandler = new Handler() {
@@ -67,28 +76,32 @@ public class DownloadService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        downloadUrl = intent.getStringExtra(BUNDLE_KEY_DOWNLOAD_URL);
-        downloadApk(downloadUrl);
+//        downloadUrl = intent.getStringExtra(BUNDLE_KEY_DOWNLOAD_URL);
+//        downloadName = intent.getStringExtra(BUNDLE_KEY_DOWNLOAD_NAME);
+        List<LoadFile> listFile = (List<LoadFile>) intent.getSerializableExtra(BUNDLE_KEY_DOWNLOAD_FILE);
+        for(int i=0;i<listFile.size();i++){
+            downloadApk(listFile.get(i));
+        }
         return binder;
     }
 
     /**
      * 下载最新压缩包
      */
-    private void downloadApk(String url) {
+    private void downloadApk(LoadFile loadFile) {
         downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         downloadObserver = new DownloadChangeObserver();
 
         registerContentObserver();
 
-        File dir = new File(FileDir.getDir());//路径视频
-        if (!dir.exists()) {//路径不存在则创建
-            dir.mkdir();
-        }
-        File fileZip = new File(FileDir.getZipVideo());//下载保存的位置
-        Uri uri = Uri.fromFile(fileZip);
-
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+//        File dir = new File(FileDir.getDir());//路径视频
+//        if (!dir.exists()) {//路径不存在则创建
+//            dir.mkdir();
+//        }
+//        File fileZip = new File(FileDir.getZipVideo());//下载保存的位置
+//        File fileZip = new File(FileDir.getVideoName());//下载保存的位置
+//        Uri uri = Uri.fromFile(fileZip);
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(loadFile.url));
         /**设置用于下载时的网络状态*/
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
         /**设置通知栏是否可见*/
@@ -99,11 +112,11 @@ public class DownloadService extends Service {
          我们需要调用Request对象的setVisibleInDownloadsUi方法，传递参数true.*/
         request.setVisibleInDownloadsUi(true);
         /**设置文件保存路径*/
-//        request.setDestinationInExternalFilesDir(getApplicationContext(), "phoenix", "phoenix.apk");
-        request.setDestinationUri(uri);
+//        request.setDestinationInExternalFilesDir(getApplicationContext(), FileDir.getDir(),name);
+//        request.setDestinationUri(uri);
+        request.setDestinationInExternalPublicDir("duowei",loadFile.fileName);
         /**将下载请求放入队列， return下载任务的ID*/
         downloadId = downloadManager.enqueue(request);
-
         registerBroadcast();
     }
 
@@ -211,7 +224,6 @@ public class DownloadService extends Service {
      * 接受下载完成广播
      */
     private class DownLoadBroadcast extends BroadcastReceiver {
-
         @Override
         public void onReceive(Context context, Intent intent) {
             long downId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
@@ -219,9 +231,7 @@ public class DownloadService extends Service {
                 case DownloadManager.ACTION_DOWNLOAD_COMPLETE:
                     if (downloadId == downId && downId != -1 && downloadManager != null) {
                         Uri downIdUri = downloadManager.getUriForDownloadedFile(downloadId);
-
                         close();
-
                         if (downIdUri != null) {
 //                            LogUtil.i(TAG, "广播监听下载完成，APK存储路径为 ：" + downIdUri.getPath());
 //                            SPUtil.put(Constant.SP_DOWNLOAD_PATH, downIdUri.getPath());
@@ -243,12 +253,10 @@ public class DownloadService extends Service {
      * 监听下载进度
      */
     private class DownloadChangeObserver extends ContentObserver {
-
         public DownloadChangeObserver() {
             super(downLoadHandler);
             scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         }
-
         /**
          * 当所监听的Uri发生改变时，就会回调此方法
          *
@@ -259,7 +267,6 @@ public class DownloadService extends Service {
             scheduledExecutorService.scheduleAtFixedRate(progressRunnable, 0, 1, TimeUnit.SECONDS);
         }
     }
-
     public class DownloadBinder extends Binder {
         /**
          * 返回当前服务的实例
@@ -271,7 +278,6 @@ public class DownloadService extends Service {
         }
 
     }
-
     public interface OnProgressListener {
         /**
          * 下载进度
@@ -280,7 +286,6 @@ public class DownloadService extends Service {
          */
         void onProgress(float fraction);
     }
-
     /**
      * 对外开发的方法
      *
@@ -289,7 +294,6 @@ public class DownloadService extends Service {
     public void setOnProgressListener(OnProgressListener onProgressListener) {
         this.onProgressListener = onProgressListener;
     }
-
     @Override
     public void onDestroy() {
         super.onDestroy();

@@ -8,8 +8,8 @@ public class VersionUpdate {
      *
      * @param versionUpdate
      */
-     public static void checkVersion(final VersionUpdateImpl versionUpdate,String url) {
+     public static void checkVersion(final VersionUpdateImpl versionUpdate,String url,String name) {
          //从网络请求获取到下载路径，此处是随便找的链接
-         versionUpdate.bindService(url);
+         versionUpdate.bindService(url,name);
      }
 }

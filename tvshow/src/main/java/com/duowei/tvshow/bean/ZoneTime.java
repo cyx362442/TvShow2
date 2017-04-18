@@ -95,6 +95,16 @@ public class ZoneTime {
             private String ad;
             private String video_palce;
             private FileNameBean file_name;
+            private FileUrlBean file_url;
+
+            public FileUrlBean getFile_url() {
+                return file_url;
+            }
+
+            public void setFile_url(FileUrlBean file_url) {
+                this.file_url = file_url;
+            }
+
             private String color;
 
             public String getColor() {
@@ -158,6 +168,26 @@ public class ZoneTime {
 
                 public void setVideo_name(String video_name) {
                     this.video_name = video_name;
+                }
+            }
+            public static class FileUrlBean{
+                private String image_url;
+                private String video_url;
+
+                public String getImage_url() {
+                    return image_url;
+                }
+
+                public void setImage_url(String image_url) {
+                    this.image_url = image_url;
+                }
+
+                public String getVideo_url() {
+                    return video_url;
+                }
+
+                public void setVideo_url(String video_url) {
+                    this.video_url = video_url;
                 }
             }
         }

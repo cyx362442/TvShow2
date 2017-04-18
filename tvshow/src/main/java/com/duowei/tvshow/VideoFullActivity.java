@@ -29,8 +29,8 @@ public class VideoFullActivity extends AppCompatActivity{
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         mJcVideoPlayer = (JCVideoPlayer) findViewById(R.id.jcvideoplayer);
         //从第一部开始播放
 //        mJcVideoPlayer.setUp(videoPath.get(0), MyJVCPlayer.SCREEN_LAYOUT_NORMAL, "");

@@ -45,16 +45,7 @@ public class VideoFragment extends Fragment{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View inflate = inflater.inflate(R.layout.fragment_main, container, false);
-        if(!TextUtils.isEmpty(mVideoname)){
-            File file = new File(FileDir.getVideoName() + mVideoname);
-            if(!file.exists()){
-                Toast.makeText(getActivity(),"视频文件不存在",Toast.LENGTH_LONG).show();
-            }else{
-                mJcVideoPlayer = (JCVideoPlayer) inflate.findViewById(R.id.jcvideoplayer);
-                mJcVideoPlayer.setUp(FileDir.getVideoName()+mVideoname,"", "");
-//                mJcVideoPlayer.startVideo();
-            }
-        }
+        mJcVideoPlayer = (JCVideoPlayer) inflate.findViewById(R.id.jcvideoplayer);
         return inflate;
     }
     @Override
@@ -63,8 +54,22 @@ public class VideoFragment extends Fragment{
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onResume() {
+        if(!TextUtils.isEmpty(mVideoname)){
+            File file = new File(FileDir.getVideoName() + mVideoname);
+            if(!file.exists()){
+                Toast.makeText(getActivity(),"视频文件不存在",Toast.LENGTH_LONG).show();
+            }else{
+                mJcVideoPlayer.setUp(FileDir.getVideoName()+mVideoname,"", "");
+//                mJcVideoPlayer.startVideo();
+            }
+        }
+        super.onResume();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
         JCVideoPlayer.releaseAllVideos();
     }
 }
