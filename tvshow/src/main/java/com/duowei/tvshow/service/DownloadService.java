@@ -76,32 +76,33 @@ public class DownloadService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-//        downloadUrl = intent.getStringExtra(BUNDLE_KEY_DOWNLOAD_URL);
+        downloadUrl = intent.getStringExtra(BUNDLE_KEY_DOWNLOAD_URL);
+        downloadApk(downloadUrl);
 //        downloadName = intent.getStringExtra(BUNDLE_KEY_DOWNLOAD_NAME);
-        List<LoadFile> listFile = (List<LoadFile>) intent.getSerializableExtra(BUNDLE_KEY_DOWNLOAD_FILE);
-        for(int i=0;i<listFile.size();i++){
-            downloadApk(listFile.get(i));
-        }
+//        List<LoadFile> listFile = (List<LoadFile>) intent.getSerializableExtra(BUNDLE_KEY_DOWNLOAD_FILE);
+//        for(int i=0;i<listFile.size();i++){
+//            downloadApk(listFile.get(i));
+//        }
         return binder;
     }
 
     /**
      * 下载最新压缩包
      */
-    private void downloadApk(LoadFile loadFile) {
+    private void downloadApk(String url) {
         downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         downloadObserver = new DownloadChangeObserver();
 
         registerContentObserver();
 
-//        File dir = new File(FileDir.getDir());//路径视频
-//        if (!dir.exists()) {//路径不存在则创建
-//            dir.mkdir();
-//        }
-//        File fileZip = new File(FileDir.getZipVideo());//下载保存的位置
+        File dir = new File(FileDir.getDir());//路径视频
+        if (!dir.exists()) {//路径不存在则创建
+            dir.mkdir();
+        }
+        File fileZip = new File(FileDir.getZipVideo());//下载保存的位置
 //        File fileZip = new File(FileDir.getVideoName());//下载保存的位置
-//        Uri uri = Uri.fromFile(fileZip);
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(loadFile.url));
+        Uri uri = Uri.fromFile(fileZip);
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         /**设置用于下载时的网络状态*/
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
         /**设置通知栏是否可见*/
@@ -113,8 +114,8 @@ public class DownloadService extends Service {
         request.setVisibleInDownloadsUi(true);
         /**设置文件保存路径*/
 //        request.setDestinationInExternalFilesDir(getApplicationContext(), FileDir.getDir(),name);
-//        request.setDestinationUri(uri);
-        request.setDestinationInExternalPublicDir("duowei",loadFile.fileName);
+        request.setDestinationUri(uri);
+//        request.setDestinationInExternalPublicDir("duowei",loadFile.fileName);
         /**将下载请求放入队列， return下载任务的ID*/
         downloadId = downloadManager.enqueue(request);
         registerBroadcast();

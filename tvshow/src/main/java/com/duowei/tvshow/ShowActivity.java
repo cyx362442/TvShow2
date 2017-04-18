@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import com.duowei.tvshow.bean.OneDataBean;
 import com.duowei.tvshow.contact.ConstsCode;
 import com.duowei.tvshow.contact.FileDir;
+import com.duowei.tvshow.dialog.CallDialog;
 import com.duowei.tvshow.fragment.VideoFragment;
 import com.duowei.tvshow.utils.CurrentTime;
 import com.duowei.tvshow.view.TextSurfaceView;
@@ -35,6 +36,7 @@ public class ShowActivity extends AppCompatActivity {
     private VideoFragment mFragment;
     private int mLastTime=0;
     private TextSurfaceView mTsfv;
+    private CallDialog mCallDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,15 +48,20 @@ public class ShowActivity extends AppCompatActivity {
                 R.id.frame04,R.id.frame05,R.id.frame06,
                 R.id.frame07,R.id.frame08,R.id.frame09,};
         startShow();
+        mCallDialog = CallDialog.getInstance();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         mLastTime=0;
+        //节目伦询
         IntentFilter intentFilter = new IntentFilter(ConstsCode.ACTION_START_HEART);
+        //呼叫伦询
+        IntentFilter intentFilter2 = new IntentFilter(ConstsCode.ACTION_START_CALL);
         mBroadCast = new ServiceBroadCast();
         registerReceiver(mBroadCast,intentFilter);
+        registerReceiver(mBroadCast,intentFilter2);
     }
 
     @Override
@@ -68,14 +75,36 @@ public class ShowActivity extends AppCompatActivity {
         super.onDestroy();
         unregisterReceiver(mBroadCast);
     }
-    /**每分钟收一次广播 */
+    /**启用广播 */
     public class ServiceBroadCast extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            /**呼叫*/
+            if(action.equals(ConstsCode.ACTION_START_CALL)){
+                mCallDialog.callShow(ShowActivity.this);
+                if(mFragment!=null){
+                    mFragment.stopPlay();
+                }
+               new Thread(new Runnable() {
+                   @Override
+                   public void run() {
+                       try {
+                           Thread.sleep(2000);
+                           mCallDialog.cancel();
+                           if(mFragment!=null){
+                               mFragment.continuePlay();
+                           }
+                       } catch (InterruptedException e) {
+                           e.printStackTrace();
+                       }
+                   }
+               }).start();
+            }
+            /**节目更新*/
             if(mLastTime>CurrentTime.getTime()){//上次时间段还未结束,返回，继续之前播放
                 return;
               }
-            String action = intent.getAction();
             if(action.equals(ConstsCode.ACTION_START_HEART)){
                 startShow();
             }
@@ -90,13 +119,11 @@ public class ShowActivity extends AppCompatActivity {
             if(newTime==true){//发现新的时间段
                 JCVideoPlayer.releaseAllVideos();
                 removeFragment();//删除上次视频
-                    mFile=new File(FileDir.getDir()+bean.image_name);//拼接图片路径
+                    mFile=new File(FileDir.getVideoName()+bean.image_name);//拼接图片路径
                     if(mFile.exists()){//文件存在则读取
                         Picasso.with(ShowActivity.this).load(mFile).fit().centerInside().into(mImageView);
-//                                Glide.with(ShowActivity.this).load(mFile).fitCenter().placeholder(R.mipmap.bg).into(mImageView);
                     }else{//不存在设一张默认的图片
                         Picasso.with(ShowActivity.this).load(R.mipmap.bg).fit().centerInside().into(mImageView);
-//                                Glide.with(ShowActivity.this).load(mFile).fitCenter().placeholder(R.mipmap.bg).into(mImageView);
                     }
                     /**视频文件存在*/
                     if(!bean.video_name.equals("null")){

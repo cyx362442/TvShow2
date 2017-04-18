@@ -2,11 +2,13 @@ package com.duowei.tvshow.httputils;
 
 import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
+import com.duowei.tvshow.utils.Base64;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public final class DownHTTP {
-	
+
 	/**
 	 * 用开源项目Volley从服务器获取数据的工具，解决的4.x版本串行的问题
 	 * */
@@ -45,6 +47,23 @@ public final class DownHTTP {
             }
 		};
 		
+		// 将http请求加入队列，volley库会开始执行请求
+		queue.add(myReq);
+	}
+
+	public static void postVolley6(String url, String sql, VolleyResultListener listener){
+		final HashMap map = new HashMap<>();
+		String base64 = Base64.getBase64(sql).replaceAll("\n", "");
+		map.put("State", "6");
+		map.put("Ssql", base64);
+		// 得到请求队列
+		RequestQueue queue = MyVolley.getRequestQueue();
+		// 创建http请求
+		MyStringRequest myReq = new MyStringRequest(Method.POST, url, listener, listener) {
+			protected Map<String, String> getParams() throws com.android.volley.AuthFailureError {
+				return map;
+			}
+		};
 		// 将http请求加入队列，volley库会开始执行请求
 		queue.add(myReq);
 	}

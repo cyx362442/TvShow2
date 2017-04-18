@@ -7,6 +7,6 @@ public interface VersionUpdateImpl {
      *
      * @param Url 下载路径
      */
-    void bindService(String fileUrl,String fileName);
+    void bindService(String fileUrl);
 
 }

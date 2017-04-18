@@ -2,7 +2,6 @@ package com.duowei.tvshow.fragment;
 
 
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -51,6 +50,7 @@ public class VideoFragment extends Fragment{
     @Override
     public void onStart() {
         super.onStart();
+
     }
 
     @Override
@@ -61,7 +61,6 @@ public class VideoFragment extends Fragment{
                 Toast.makeText(getActivity(),"视频文件不存在",Toast.LENGTH_LONG).show();
             }else{
                 mJcVideoPlayer.setUp(FileDir.getVideoName()+mVideoname,"", "");
-//                mJcVideoPlayer.startVideo();
             }
         }
         super.onResume();
@@ -71,5 +70,13 @@ public class VideoFragment extends Fragment{
     public void onStop() {
         super.onStop();
         JCVideoPlayer.releaseAllVideos();
+    }
+
+    public void stopPlay(){
+      mJcVideoPlayer.stopPlay();
+    }
+
+    public void continuePlay(){
+        mJcVideoPlayer.continuePlay();
     }
 }

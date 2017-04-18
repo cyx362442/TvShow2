@@ -840,6 +840,18 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
         Log.e("状态====","播放完毕");
+    }
 
+    public void stopPlay(){
+        if (CURRENT_STATE == CURRENT_STATE_PLAYING) {
+            CURRENT_STATE = CURRENT_STATE_PAUSE;
+            JCMediaManager.intance().mediaPlayer.pause();
+        }
+    }
+    public void continuePlay(){
+        if (CURRENT_STATE == CURRENT_STATE_PAUSE) {
+            CURRENT_STATE = CURRENT_STATE_PLAYING;
+            JCMediaManager.intance().mediaPlayer.start();
+        }
     }
 }

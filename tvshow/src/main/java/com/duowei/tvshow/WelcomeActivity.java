@@ -139,7 +139,6 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
             }
             @Override
             public void onResponse(String response) {
-                Log.e("response===",response);
                 Gson gson = new Gson();
                 ZoneTime zoneTime = gson.fromJson(response, ZoneTime.class);
                 String version = zoneTime.getVersion();//新版本号
@@ -152,7 +151,7 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
                     Consts.version=version;
                     String down_data = zoneTime.getDown_data();//压缩包下载地址
                     List<ZoneTime.ZoneTimeBean> list_zone = zoneTime.getZone_time();//电视区域信息
-//                    DataSupport.deleteAll(OneDataBean.class);
+                    DataSupport.deleteAll(OneDataBean.class);
                     /**找到该电视区号对应的数据信息集*/
                     for(int i=0;i<list_zone.size();i++){
                         ZoneTime.ZoneTimeBean.ZoneBean zone = list_zone.get(i).getZone();//电视区号
@@ -170,38 +169,33 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
                                 //数据库资源
                                 mOneDataBeanList.add(new OneDataBean(time, ad, video_palce, image_name, video_name,image_url,video_url,color));
                                 //查询本地数据库
-                                List<OneDataBean> listImage = DataSupport.select("image_name").where("image_name=?",image_name).find(OneDataBean.class);
-                                List<OneDataBean> listVideo = DataSupport.select("video_name").where("video_name=?",video_name).find(OneDataBean.class);
-                                //图片名称不存在，添加图片URL地址
-                                if(listImage.size()<=0){
-                                    listFile.add(new LoadFile(image_url,image_name));
-                                }
-                                //视频名称不存在，添加视频URL地址
-                                if(listVideo.size()<=0){
-                                    listFile.add(new LoadFile(image_url,image_name));
-                                }
+//                                List<OneDataBean> listImage = DataSupport.select("image_name").where("image_name=?",image_name).find(OneDataBean.class);
+//                                List<OneDataBean> listVideo = DataSupport.select("video_name").where("video_name=?",video_name).find(OneDataBean.class);
+//                                //图片名称不存在，添加图片URL地址
+//                                if(listImage.size()<=0){
+//                                    listFile.add(new LoadFile(image_url,image_name));
+//                                }
+//                                //视频名称不存在，添加视频URL地址
+//                                if(listVideo.size()<=0){
+//                                    listFile.add(new LoadFile(image_url,image_name));
+//                                }
                                 /**插入数据库*/
-//                                OneDataBean oneDataBean = new OneDataBean(time, ad, video_palce, image_name, video_name,image_url,video_url,color);
-//                                oneDataBean.save();
+                                OneDataBean oneDataBean = new OneDataBean(time, ad, video_palce, image_name, video_name,image_url,video_url,color);
+                                oneDataBean.save();
                             }
                         }
                     }
-                    /**插入数据库*/
-                    DataSupport.deleteAll(OneDataBean.class);
-                    DataSupport.saveAll(mOneDataBeanList);
+//                    /**插入数据库*/
+//                    DataSupport.deleteAll(OneDataBean.class);
+//                    DataSupport.saveAll(mOneDataBeanList);
                     /**下载图片、视频*/
 //                    Http_File("http://7xpj8w.com1.z0.glb.clouddn.com/video15.zip");
 //                    startDownLoad("http://7xpj8w.com1.z0.glb.clouddn.com/video15.zip");
 //                    Http_File(down_data);
 //                    startDownLoad(down_data);
-//                    VersionUpdate.checkVersion(WelcomeActivity.this,down_data);
+                    VersionUpdate.checkVersion(WelcomeActivity.this,down_data);
 //                    VersionUpdate.checkVersion(WelcomeActivity.this,"http://7xpj8w.com1.z0.glb.clouddn.com/video15.zip");
-                    for(int i=0;i<listFile.size();i++){
-                        VersionUpdate.checkVersion(WelcomeActivity.this,listFile.get(loadPosition).url,listFile.get(loadPosition).fileName);
-                    }
                 }
-                mEdit.putString("version",version);
-                mEdit.commit();
             }
         });
     }
@@ -236,13 +230,13 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
     }
 
     @Override
-    public void bindService(String url,String name) {
+    public void bindService(String url) {
         Intent intent = new Intent(this, DownloadService.class);
-//        intent.putExtra(DownloadService.BUNDLE_KEY_DOWNLOAD_URL, url);
+        intent.putExtra(DownloadService.BUNDLE_KEY_DOWNLOAD_URL, url);
 //        intent.putExtra(BUNDLE_KEY_DOWNLOAD_NAME,name);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(DownloadService.BUNDLE_KEY_DOWNLOAD_FILE, (Serializable) listFile);
-        intent.putExtras(bundle);
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable(DownloadService.BUNDLE_KEY_DOWNLOAD_FILE, (Serializable) listFile);
+//        intent.putExtras(bundle);
         isBindService = bindService(intent, conn, BIND_AUTO_CREATE);
     }
 
