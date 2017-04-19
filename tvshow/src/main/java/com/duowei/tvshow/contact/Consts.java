@@ -9,4 +9,6 @@ public class Consts {
     public static String EDIT_KEY="edittext_key";
     public static String CHECKOUT_KEY="checkbox_key";
     public static String version="0";
+    public static int callTime=0;
+    public static String ip;
 }

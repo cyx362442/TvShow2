@@ -30,6 +30,18 @@
             android:title="开机自启动"
             android:visibility="gone"
             />
+        <ListPreference
+            android:key="list_key2"
+            android:title="显示呼叫取菜"
+            android:summary="list_summary"
+            android:entries="@array/list_calltime_entries"
+            android:entryValues="@array/list_calltime_entries"
+            android:dialogTitle="呼叫取菜时长" />
+        <EditTextPreference
+            android:key="edittext_key4"
+            android:summary="192.168.1.78"
+            android:inputType="textUri"
+            android:title="前台收银机IP" />
     </PreferenceCategory>
     <PreferenceScreen
         android:key="dect_settings"

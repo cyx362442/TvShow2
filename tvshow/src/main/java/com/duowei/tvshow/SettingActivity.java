@@ -12,12 +12,9 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.KeyEvent;
 
 import com.duowei.tvshow.contact.Consts;
 
-import org.litepal.util.Const;
 
 public class SettingActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener {
     private EditTextPreference mEtPreference1;
@@ -27,11 +24,12 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
     private CheckBoxPreference mCheckPreference;
     private SharedPreferences.Editor mEdit;
     private Intent mIntent;
+    private ListPreference mListKey2;
+    private EditTextPreference mEtPreference4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_setting);
         SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
         mEdit = preferences.edit();
         addPreferencesFromResource(R.xml.preferenc);
@@ -43,6 +41,9 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
         mEtPreference3 = (EditTextPreference)findPreference("edittext_key3");
         mListPreference = (ListPreference)findPreference(Consts.LIST_KEY);
         mCheckPreference = (CheckBoxPreference)findPreference(Consts.CHECKOUT_KEY);
+        mListKey2 = (ListPreference) findPreference("list_key2");//呼叫显示时长
+        mEtPreference4 = (EditTextPreference) findPreference("edittext_key4");//前台IP
+
         findPreference("dect_settings").setOnPreferenceClickListener(this);
     }
 
@@ -59,6 +60,8 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
         mEtPreference2.setSummary(sharedPreferences.getString("edittext_key2", ""));
         mEtPreference3.setSummary(sharedPreferences.getString("edittext_key3", ""));
         mCheckPreference.setChecked(sharedPreferences.getBoolean("checkbox_key",true));
+        mListKey2.setSummary(sharedPreferences.getString("list_key2","关闭"));
+        mEtPreference4.setSummary(sharedPreferences.getString("edittext_key4",""));
         // Set up a listener whenever a key changes
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
@@ -91,6 +94,12 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
         }else if(key.equals(Consts.CHECKOUT_KEY)){//是否开机自启动
             mCheckPreference.setChecked(sharedPreferences.getBoolean(key,true));
             mEdit.putBoolean(Consts.CHECKOUT_KEY,sharedPreferences.getBoolean(key,true));
+        }else if(key.equals("list_key2")){//呼叫取菜
+            mListKey2.setSummary(sharedPreferences.getString(key,""));
+            mEdit.putString("callvalue",sharedPreferences.getString(key,"关闭"));
+        }else if(key.equals("edittext_key4")){//前台IP
+            mEtPreference4.setSummary(sharedPreferences.getString(key,""));
+            mEdit.putString("ip",sharedPreferences.getString(key,""));
         }
         mEdit.commit();
     }

@@ -15,6 +15,7 @@ import android.widget.ImageView;
 
 import com.duowei.tvshow.bean.KDSCall;
 import com.duowei.tvshow.bean.OneDataBean;
+import com.duowei.tvshow.contact.Consts;
 import com.duowei.tvshow.contact.ConstsCode;
 import com.duowei.tvshow.contact.FileDir;
 import com.duowei.tvshow.dialog.CallDialog;
@@ -56,8 +57,9 @@ public class ShowActivity extends AppCompatActivity {
         mId = new int[]{R.id.frame01,R.id.frame02,R.id.frame03,
                 R.id.frame04,R.id.frame05,R.id.frame06,
                 R.id.frame07,R.id.frame08,R.id.frame09,};
+        //开启时间段轮询
         startShow();
-
+        //开启呼叫轮询
         startCall();
 
         mCallDialog = CallDialog.getInstance();
@@ -87,7 +89,7 @@ public class ShowActivity extends AppCompatActivity {
                     Post7.Instance().updateCall(sql);
                     /**呼叫显示时长*/
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(Consts.callTime*1000);
                         mCallDialog.cancel();
                         //继续视频播放
                         if(mFragment!=null){
@@ -193,6 +195,10 @@ public class ShowActivity extends AppCompatActivity {
 
     /**呼叫轮询*/
     private void startCall() {
+        //呼叫显示时间
+        if(Consts.callTime<=0){
+            return;
+        }
         if(mHandler!=null){
             mHandler.removeCallbacks(mRun);
         }

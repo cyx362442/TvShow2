@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.android.volley.VolleyError;
 import com.duowei.tvshow.bean.KDSCall;
+import com.duowei.tvshow.contact.Consts;
 import com.duowei.tvshow.event.CallEvent;
 import com.google.gson.Gson;
 
@@ -29,7 +30,7 @@ public class Post6 {
     List<KDSCall>listCall;
     public synchronized void getCall(){
         listCall=new ArrayList<>();
-        DownHTTP.postVolley6("http://192.168.1.78:2233/server/ServerSvlt?", sql, new VolleyResultListener() {
+        DownHTTP.postVolley6(Consts.ip, sql, new VolleyResultListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
             }

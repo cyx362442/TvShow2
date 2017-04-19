@@ -107,6 +107,13 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
         mWeid = preferences.getString("weid", "");
         mStoreid=preferences.getString("storeid","");
         mZoneNum=preferences.getString("zoneNum","");
+        String times = preferences.getString("callvalue", "关闭");
+        if(times.equals("关闭")){
+            Consts.callTime = 0;
+        }else{
+            Consts.callTime = Integer.parseInt(times.substring(0, 1));
+        }
+        Consts.ip="http://"+preferences.getString("ip","")+":2233/server/ServerSvlt?";
         if(TextUtils.isEmpty(mWurl)||TextUtils.isEmpty(mWeid)||TextUtils.isEmpty(mStoreid)||TextUtils.isEmpty(mZoneNum)){
             mIntent=new Intent(this,SettingActivity.class);
             startActivity(mIntent);
