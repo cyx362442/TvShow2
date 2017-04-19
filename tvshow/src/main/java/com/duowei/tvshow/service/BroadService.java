@@ -18,11 +18,6 @@ public class BroadService extends Service {
      */
     private static final long HEARTBEAT_INTERVAL = 60 * 1000L;
 
-    /**
-     * 心跳间隔一秒钟(呼叫轮询)
-     */
-    private static final long HEARTBEAT_CALL = 20*1000L;
-
     private AlarmManager mAlarmManager;
 
     private PendingIntent mPendingIntent;
@@ -50,12 +45,8 @@ public class BroadService extends Service {
 //        sendBroadcast(startIntent);
         // 启动心跳定时器
         long triggerAtTime = SystemClock.elapsedRealtime() + HEARTBEAT_INTERVAL;
-        long triggerAtTime2 = SystemClock.elapsedRealtime() + HEARTBEAT_CALL;
         mAlarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                 triggerAtTime, HEARTBEAT_INTERVAL, mPendingIntent);
-
-        mAlarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                triggerAtTime2, HEARTBEAT_CALL, mPendingIntentCALL);
         return super.onStartCommand(intent, flags, startId);
     }
 

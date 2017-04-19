@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -12,20 +13,26 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.duowei.tvshow.bean.KDSCall;
 import com.duowei.tvshow.bean.OneDataBean;
 import com.duowei.tvshow.contact.ConstsCode;
 import com.duowei.tvshow.contact.FileDir;
 import com.duowei.tvshow.dialog.CallDialog;
+import com.duowei.tvshow.event.CallEvent;
 import com.duowei.tvshow.fragment.VideoFragment;
+import com.duowei.tvshow.httputils.Post6;
+import com.duowei.tvshow.httputils.Post7;
 import com.duowei.tvshow.utils.CurrentTime;
 import com.duowei.tvshow.view.TextSurfaceView;
 import com.squareup.picasso.Picasso;
 
+import org.greenrobot.eventbus.Subscribe;
 import org.litepal.crud.DataSupport;
 
 import java.io.File;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 
 public class ShowActivity extends AppCompatActivity {
@@ -37,18 +44,61 @@ public class ShowActivity extends AppCompatActivity {
     private int mLastTime=0;
     private TextSurfaceView mTsfv;
     private CallDialog mCallDialog;
-
+    private Handler mHandler;
+    private Runnable mRun;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show);
+        EventBus.getDefault().register(this);
         mImageView = (ImageView) findViewById(R.id.image);
         mTsfv = (TextSurfaceView) findViewById(R.id.textView);
         mId = new int[]{R.id.frame01,R.id.frame02,R.id.frame03,
                 R.id.frame04,R.id.frame05,R.id.frame06,
                 R.id.frame07,R.id.frame08,R.id.frame09,};
         startShow();
+
+        startCall();
+
         mCallDialog = CallDialog.getInstance();
+    }
+
+    @Subscribe
+    public void onEvent(final CallEvent event){
+        final KDSCall call = event.call;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (call !=null){
+                    //暂停视频
+                    if(mFragment!=null){
+                        mFragment.stopPlay();
+                    }
+                    /**显示呼叫界面*/
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mCallDialog.callShow(ShowActivity.this, call.getTableno());
+                        }
+                    });
+                    /**删除服务器上这条记录*/
+                    String xh = call.getXh();
+                    String sql="delete from KDSCall where xh='"+xh+"'|";
+                    Post7.Instance().updateCall(sql);
+                    /**呼叫显示时长*/
+                    try {
+                        Thread.sleep(2000);
+                        mCallDialog.cancel();
+                        //继续视频播放
+                        if(mFragment!=null){
+                            mFragment.continuePlay();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 
     @Override
@@ -67,6 +117,10 @@ public class ShowActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         JCVideoPlayer.releaseAllVideos();
+        EventBus.getDefault().unregister(this);
+        if(mHandler!=null){
+            mHandler.removeCallbacks(mRun);
+        }
         super.onStop();
     }
 
@@ -75,32 +129,12 @@ public class ShowActivity extends AppCompatActivity {
         super.onDestroy();
         unregisterReceiver(mBroadCast);
     }
+
     /**启用广播 */
     public class ServiceBroadCast extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            /**呼叫*/
-            if(action.equals(ConstsCode.ACTION_START_CALL)){
-                mCallDialog.callShow(ShowActivity.this);
-                if(mFragment!=null){
-                    mFragment.stopPlay();
-                }
-               new Thread(new Runnable() {
-                   @Override
-                   public void run() {
-                       try {
-                           Thread.sleep(2000);
-                           mCallDialog.cancel();
-                           if(mFragment!=null){
-                               mFragment.continuePlay();
-                           }
-                       } catch (InterruptedException e) {
-                           e.printStackTrace();
-                       }
-                   }
-               }).start();
-            }
             /**节目更新*/
             if(mLastTime>CurrentTime.getTime()){//上次时间段还未结束,返回，继续之前播放
                 return;
@@ -111,6 +145,7 @@ public class ShowActivity extends AppCompatActivity {
         }
     }
 
+    /**时间段节目轮询*/
     private void startShow() {
         List<OneDataBean> list = DataSupport.findAll(OneDataBean.class);
         for(OneDataBean bean:list){
@@ -154,6 +189,22 @@ public class ShowActivity extends AppCompatActivity {
                 break;
             }
         }
+    }
+
+    /**呼叫轮询*/
+    private void startCall() {
+        if(mHandler!=null){
+            mHandler.removeCallbacks(mRun);
+        }
+        mHandler = new Handler();
+        mHandler.postDelayed(mRun=new Runnable() {
+            @Override
+            public void run() {
+                mHandler.postDelayed(this,1000);
+                Post6.instance().getCall();
+                Log.e("呼叫===","开始……");
+            }
+        },5000);
     }
 
     private void removeFragment() {
