@@ -136,4 +136,12 @@ public class VideoFullActivity extends AppCompatActivity{
         JCVideoPlayer.releaseAllVideos();
         EventBus.getDefault().unregister(this);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mHandler!=null){
+            mHandler.removeCallbacks(mRun);
+        }
+    }
 }
