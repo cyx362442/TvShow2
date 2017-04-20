@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.duowei.tvshow.bean.KDSCall;
 import com.duowei.tvshow.bean.OneDataBean;
@@ -25,6 +26,10 @@ import com.duowei.tvshow.httputils.Post6;
 import com.duowei.tvshow.httputils.Post7;
 import com.duowei.tvshow.utils.CurrentTime;
 import com.duowei.tvshow.view.TextSurfaceView;
+import com.iflytek.cloud.ErrorCode;
+import com.iflytek.cloud.InitListener;
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechSynthesizer;
 import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -47,6 +52,8 @@ public class ShowActivity extends AppCompatActivity {
     private CallDialog mCallDialog;
     private Handler mHandler;
     private Runnable mRun;
+    // 语音合成对象
+    private SpeechSynthesizer mTts;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,13 +68,33 @@ public class ShowActivity extends AppCompatActivity {
         startShow();
         //开启呼叫轮询
         startCall();
+        // 初始化合成对象
+        mTts = SpeechSynthesizer.createSynthesizer(ShowActivity.this, mTtsInitListener);
 
         mCallDialog = CallDialog.getInstance();
     }
 
+    /**
+     * 初始化监听。
+     */
+    private InitListener mTtsInitListener = new InitListener() {
+        @Override
+        public void onInit(int code) {
+            if (code != ErrorCode.SUCCESS) {
+                Toast.makeText(ShowActivity.this,"初始化失败，错误代码:"+code,Toast.LENGTH_LONG).show();
+            } else {
+                // 初始化成功，之后可以调用startSpeaking方法
+                // 注：有的开发者在onCreate方法中创建完合成对象之后马上就调用startSpeaking进行合成，
+                // 正确的做法是将onCreate中的startSpeaking调用移至这里
+            }
+        }
+    };
+
     @Subscribe
     public void onEvent(final CallEvent event){
         final KDSCall call = event.call;
+        //停止轮询
+        mHandler.removeCallbacks(mRun);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -80,16 +107,27 @@ public class ShowActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            //显示
                             mCallDialog.callShow(ShowActivity.this, call.getTableno());
+                            //播音
+                            //设置合成语速
+                            mTts.setParameter(SpeechConstant.SPEED, "30");
+                            //设置合成音调
+                            mTts.setParameter(SpeechConstant.PITCH, "50");
+                            //设置合成音量
+                            mTts.setParameter(SpeechConstant.VOLUME, "100");
+                            int code = mTts.startSpeaking("请"+call.getTableno()+"号到柜台取餐", null);
                         }
                     });
                     /**删除服务器上这条记录*/
                     String xh = call.getXh();
                     String sql="delete from KDSCall where xh='"+xh+"'|";
-                    Post7.Instance().updateCall(sql);
                     /**呼叫显示时长*/
                     try {
                         Thread.sleep(Consts.callTime*1000);
+                        //继续轮询
+                        mHandler.postDelayed(mRun,1000);
+                        Post7.Instance().updateCall(sql);
                         mCallDialog.cancel();
                         //继续视频播放
                         if(mFragment!=null){

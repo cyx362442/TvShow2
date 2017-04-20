@@ -9,4 +9,7 @@
     <string name="no_url">No mUrl</string>
     <string name="title_activity_settings">Settings</string>
     <string name="setting_url">ai.wxdw.top</string>
+
+    <!-- 请替换成在语音云官网申请的appid -->
+    <string name="app_id">58f8371c</string>
 </resources>

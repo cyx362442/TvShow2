@@ -47,5 +47,4 @@ class Utils {
             return mFormatter.format("%02d:%02d", minutes, seconds).toString();
         }
     }
-
 }

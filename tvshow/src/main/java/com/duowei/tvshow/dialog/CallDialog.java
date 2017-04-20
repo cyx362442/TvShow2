@@ -4,8 +4,11 @@ import android.content.Context;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.duowei.tvshow.R;
@@ -26,24 +29,29 @@ public class CallDialog {
     }
     private  LinearLayout mLayout;
     private AlertDialog mDialog;
-    public void callShow(Context context,String msg){
+    public synchronized void callShow(Context context,String msg){
         if(mDialog!=null){
             mDialog.dismiss();
         }
+
+
 
         mDialog = new AlertDialog.Builder(context).create();
         //必须先setView，否则在dialog\popuwindow中无法自动弹出软健盘
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mLayout = (LinearLayout)inflater.inflate(R.layout.dialog_item, null);
-        mDialog.setView(mLayout);
         mDialog.show();
-        WindowManager.LayoutParams params = mDialog.getWindow().getAttributes();
+        Window window = mDialog.getWindow();
+        window.setContentView(R.layout.dialog_item);
+        //尺寸适应屏幕大小
+        WindowManager.LayoutParams params = window.getAttributes();
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         params.width = dm.widthPixels;
-        params.height = dm.heightPixels ;
-        mDialog.getWindow().setAttributes(params);
-        TextView tvMsg = (TextView) mLayout.findViewById(R.id.tv_msg);
-        tvMsg.setText(msg);
+        params.height = dm.heightPixels;
+        window.setAttributes(params);
+
+        TextView tvMsg = (TextView) window.findViewById(R.id.tv_msg);
+        tvMsg.setText("请"+msg+"号");
     }
     public void cancel(){
         mDialog.dismiss();

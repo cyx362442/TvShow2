@@ -45,4 +45,5 @@ dependencies {
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
     compile files('libs/netroid-1.2.1.jar')
     compile project(':jcvideoplayer-lib')
+    compile files('libs/Msc.jar')
 }
