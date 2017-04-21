@@ -26,7 +26,7 @@ public class Post6 {
         }
         return post;
     }
-    String sql="select top 1 xh,tableno from KDSCall|";
+    String sql="select top 1 xh,tableno from KDSCall WHERE DATEADD(mi,-2,GETDATE()) < XDSJ|";
     List<KDSCall>listCall;
     public synchronized void getCall(){
         listCall=new ArrayList<>();

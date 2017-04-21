@@ -50,7 +50,7 @@ public class CallDialog {
         window.setAttributes(params);
 
         TextView tvMsg = (TextView) window.findViewById(R.id.tv_msg);
-        tvMsg.setText("请"+msg+"号");
+        tvMsg.setText(msg+"号");
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.scale_call);
         tvMsg.startAnimation(animation);
     }
