@@ -134,4 +134,12 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
         }
         return false;
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mIntent = new Intent(this, MainActivity.class);
+        startActivity(mIntent);
+        finish();
+    }
 }
