@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MyTvTest.iml" filepath="$PROJECT_DIR$/MyTvTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TvShow2.iml" filepath="$PROJECT_DIR$/TvShow2.iml" />
       <module fileurl="file://$PROJECT_DIR$/jcvideoplayer-lib/jcvideoplayer-lib.iml" filepath="$PROJECT_DIR$/jcvideoplayer-lib/jcvideoplayer-lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/tvshow/tvshow.iml" filepath="$PROJECT_DIR$/tvshow/tvshow.iml" />
     </modules>

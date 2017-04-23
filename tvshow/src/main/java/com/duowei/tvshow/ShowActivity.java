@@ -9,9 +9,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.duowei.tvshow.bean.KDSCall;
@@ -54,13 +57,18 @@ public class ShowActivity extends AppCompatActivity {
     private Runnable mRun;
     // 语音合成对象
     private SpeechSynthesizer mTts;
+    private JCVideoPlayer mJcvideoPlayer;
+    private LinearLayout mLl;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show);
         EventBus.getDefault().register(this);
+        mLl = (LinearLayout) findViewById(R.id.linearLayout);
         mImageView = (ImageView) findViewById(R.id.image);
         mTsfv = (TextSurfaceView) findViewById(R.id.textView);
+        mJcvideoPlayer = (JCVideoPlayer) findViewById(R.id.jcvideoplayer_full);
         mId = new int[]{R.id.frame01,R.id.frame02,R.id.frame03,
                 R.id.frame04,R.id.frame05,R.id.frame06,
                 R.id.frame07,R.id.frame08,R.id.frame09,};
@@ -195,13 +203,14 @@ public class ShowActivity extends AppCompatActivity {
                 JCVideoPlayer.releaseAllVideos();
                 removeFragment();//删除上次视频
                     mFile=new File(FileDir.getVideoName()+bean.image_name);//拼接图片路径
-                    if(mFile.exists()){//文件存在则读取
+                    if(mFile.exists()&&bean.video_name.equals("null")){//图片文件存在则读取
+                        mLl.setVisibility(View.VISIBLE);
+                        mJcvideoPlayer.setVisibility(View.GONE);
                         Picasso.with(ShowActivity.this).load(mFile).fit().centerInside().into(mImageView);
-                    }else{//不存在设一张默认的图片
-                        Picasso.with(ShowActivity.this).load(R.mipmap.bg).fit().centerInside().into(mImageView);
-                    }
-                    /**视频文件存在*/
-                    if(!bean.video_name.equals("null")){
+                    }else if(mFile.exists()&&!bean.video_name.equals("null")){//不存在设一张默认的图片
+                        mLl.setVisibility(View.VISIBLE);
+                        mJcvideoPlayer.setVisibility(View.GONE);
+                        Picasso.with(ShowActivity.this).load(mFile).fit().centerInside().into(mImageView);
                         mFragment=new VideoFragment();
                         int place = Integer.parseInt(bean.video_palce);//视频位置
                         Bundle bundle = new Bundle();
@@ -211,7 +220,23 @@ public class ShowActivity extends AppCompatActivity {
                         FragmentTransaction transaction = fragmentManager.beginTransaction();
                         transaction.replace(mId[place-1],mFragment);
                         transaction.commit();
+                    }else if(!mFile.exists()&&!bean.video_name.equals("null")){
+                        mLl.setVisibility(View.GONE);
+                        mJcvideoPlayer.setVisibility(View.VISIBLE);
+                        mJcvideoPlayer.setUp(FileDir.getVideoName()+bean.video_name,"", "");
                     }
+                    /**视频文件存在*/
+//                    if(!bean.video_name.equals("null")){
+//                        mFragment=new VideoFragment();
+//                        int place = Integer.parseInt(bean.video_palce);//视频位置
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString("videoname",bean.video_name);
+//                        mFragment.setArguments(bundle);
+//                        FragmentManager fragmentManager = getSupportFragmentManager();
+//                        FragmentTransaction transaction = fragmentManager.beginTransaction();
+//                        transaction.replace(mId[place-1],mFragment);
+//                        transaction.commit();
+//                    }
                     /**滚动文字内容*/
                     if(!TextUtils.isEmpty(bean.ad)){
                         mTsfv.setMove(true);
