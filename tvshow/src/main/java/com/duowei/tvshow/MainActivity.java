@@ -56,8 +56,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initUI();
-//        mIntent = new Intent(this, ShowActivity.class);
-//        startActivity(mIntent);
         mIntentService = new Intent(this, BroadService.class);
         startService(mIntentService);
         //开启时间段轮询
