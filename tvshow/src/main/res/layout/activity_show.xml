@@ -5,37 +5,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.duowei.tvshow.ShowActivity">
+
     <ImageView
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@mipmap/bg"
-        android:scaleType="fitXY"/>
+        android:scaleType="fitXY"
+        android:src="@mipmap/bg"/>
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         >
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
+
             <FrameLayout
                 android:id="@+id/frame01"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
             </FrameLayout>
+
             <FrameLayout
                 android:id="@+id/frame02"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
             </FrameLayout>
+
             <FrameLayout
                 android:id="@+id/frame03"
                 android:layout_width="0dp"
@@ -43,6 +46,7 @@
                 android:layout_weight="1">
             </FrameLayout>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -61,6 +65,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
             </FrameLayout>
+
             <FrameLayout
                 android:id="@+id/frame06"
                 android:layout_width="match_parent"
@@ -68,10 +73,12 @@
                 android:layout_weight="1">
             </FrameLayout>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
+
             <FrameLayout
                 android:id="@+id/frame07"
                 android:layout_width="match_parent"
@@ -94,6 +101,14 @@
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>
+
+    <fm.jiecao.jcvideoplayer_lib.JCVideoPlayer
+        android:id="@+id/jcvideoplayer_full"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+    </fm.jiecao.jcvideoplayer_lib.JCVideoPlayer>
+
     <com.duowei.tvshow.view.TextSurfaceView
         android:id="@+id/textView"
         android:layout_width="match_parent"
