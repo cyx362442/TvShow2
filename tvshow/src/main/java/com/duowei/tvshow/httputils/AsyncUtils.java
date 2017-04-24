@@ -24,11 +24,9 @@ import de.greenrobot.event.EventBus;
 
 public class AsyncUtils extends AsyncTask<String, Integer, Integer> {
     Context context;
-    private  ProgressDialog mProgressDialog;
+    private final ProgressDialog mProgressDialog;
     public AsyncUtils(Context context) {
         this.context = context;
-    }
-    public void setProgress(){
         mProgressDialog = new ProgressDialog(context);
         mProgressDialog.setTitle("提示");
         mProgressDialog.setMessage("文件下载中……");
@@ -55,7 +53,7 @@ public class AsyncUtils extends AsyncTask<String, Integer, Integer> {
             URL url = new URL(params[0]);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();//开启连接
             urlConnection.connect();
-            urlConnection.setConnectTimeout(5*1000);  //设置超时时间
+            urlConnection.setConnectTimeout(50*1000);  //设置超时时间
             lenghtOfFile = urlConnection.getContentLength();//获取下载文件的总长度
             is = urlConnection.getInputStream();// 开启流
             fos = new FileOutputStream(fileZip);// 开启写的流
