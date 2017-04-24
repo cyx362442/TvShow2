@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.duowei.tvshow.contact.FileDir;
+import com.duowei.tvshow.event.ConnectSuccess;
 import com.duowei.tvshow.event.ReConnect;
 
 import java.io.File;
@@ -53,7 +54,10 @@ public class AsyncUtils extends AsyncTask<String, Integer, Integer> {
             URL url = new URL(params[0]);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();//开启连接
             urlConnection.connect();
-            urlConnection.setConnectTimeout(50*1000);  //设置超时时间
+            if(HttpURLConnection.HTTP_OK==urlConnection.getResponseCode()){
+                EventBus.getDefault().post(new ConnectSuccess());
+            }
+            urlConnection.setConnectTimeout(60*1000);  //设置超时时间
             lenghtOfFile = urlConnection.getContentLength();//获取下载文件的总长度
             is = urlConnection.getInputStream();// 开启流
             fos = new FileOutputStream(fileZip);// 开启写的流
