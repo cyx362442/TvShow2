@@ -69,6 +69,15 @@ public class ShowActivity extends AppCompatActivity {
                 R.id.frame04,R.id.frame05,R.id.frame06,
                 R.id.frame07,R.id.frame08,R.id.frame09,};
         Intent intent = getIntent();
+        startShow(intent);
+        //开启呼叫轮询
+        startCall();
+        // 初始化合成对象
+        mTts = SpeechSynthesizer.createSynthesizer(ShowActivity.this, mTtsInitListener);
+        mCallDialog = CallDialog.getInstance();
+    }
+
+    private void startShow(Intent intent) {
         if(intent.getStringExtra("image_name")!=null&&intent.getStringExtra("video_name")==null){
             mFile=new File(FileDir.getVideoName()+intent.getStringExtra("image_name"));//拼接图片路径
             Picasso.with(this).load(mFile).fit().centerInside().into(mImageView);
@@ -99,11 +108,6 @@ public class ShowActivity extends AppCompatActivity {
         }else{
             mTsfv.setFontColor("#ffffff");
         }
-        //开启呼叫轮询
-        startCall();
-        // 初始化合成对象
-        mTts = SpeechSynthesizer.createSynthesizer(ShowActivity.this, mTtsInitListener);
-        mCallDialog = CallDialog.getInstance();
     }
 
     /**
