@@ -105,7 +105,9 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
 
     //第一次连接失败，重新下载连接
     public void onEventMainThread(ReConnect event){
-       Http_File(mDown_data);
+//       Http_File(mDown_data);
+        AsyncUtils asyncUtils = new AsyncUtils(WelcomeActivity.this);
+        asyncUtils.execute(mDown_data);
     }
 
     private boolean getPreferData() {
@@ -217,6 +219,7 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
     private void Http_File(String url) {
         AsyncUtils asyncUtils = new AsyncUtils(WelcomeActivity.this);
         asyncUtils.execute(url);
+        asyncUtils.setProgress();
     }
     private void toMainActivity(){
         mIntent = new Intent(this, MainActivity.class);
