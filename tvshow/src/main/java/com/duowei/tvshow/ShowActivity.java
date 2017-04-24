@@ -73,10 +73,10 @@ public class ShowActivity extends AppCompatActivity {
             mFile=new File(FileDir.getVideoName()+intent.getStringExtra("image_name"));//拼接图片路径
             Picasso.with(this).load(mFile).fit().centerInside().into(mImageView);
         }else if(intent.getStringExtra("video_name")!=null&&intent.getStringExtra("image_name")!=null){
-//            JCVideoPlayer.releaseAllVideos();
-//            removeFragment();//删除上次视频
             mFile=new File(FileDir.getVideoName()+intent.getStringExtra("image_name"));//拼接图片路径
-            Picasso.with(this).load(mFile).fit().centerInside().into(mImageView);
+            JCVideoPlayer.releaseAllVideos();
+            removeFragment();//删除上次视频
+            Picasso.with(ShowActivity.this).load(mFile).fit().centerInside().into(mImageView);
             mFragment=new VideoFragment();
             int place = Integer.parseInt(intent.getStringExtra("video_palce"));//视频位置
             Bundle bundle = new Bundle();
@@ -197,7 +197,7 @@ public class ShowActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        JCVideoPlayer.releaseAllVideos();
+//        JCVideoPlayer.releaseAllVideos();
         EventBus.getDefault().unregister(this);
         if(mHandler!=null){
             mHandler.removeCallbacks(mRun);
@@ -249,7 +249,7 @@ public class ShowActivity extends AppCompatActivity {
                     }
                     /**图片、视频混合模式*/
                     else if(!bean.video_name.equals("null")&&!bean.image_name.equals("null")){
-//                        JCVideoPlayer.releaseAllVideos();
+                        JCVideoPlayer.releaseAllVideos();
                         removeFragment();//删除上次视频
                         Picasso.with(ShowActivity.this).load(mFile).fit().centerInside().into(mImageView);
                         mFragment=new VideoFragment();

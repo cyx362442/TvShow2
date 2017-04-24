@@ -295,17 +295,17 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
 
     public void onEventMainThread(VideoEvents videoEvents) {
         if (videoEvents.type == VideoEvents.VE_MEDIAPLAYER_FINISH_COMPLETE) {
-////            if (CURRENT_STATE != CURRENT_STATE_PREPAREING) {
-//            cancelProgressTimer();
-//            ivStart.setImageResource(R.drawable.click_video_play_selector);
-//            ivThumb.setVisibility(View.VISIBLE);
-//            ivStart.setVisibility(View.VISIBLE);
-////                JCMediaPlayer.intance().mediaPlayer.setDisplay(null);
-//            //TODO 这里要将背景置黑，
-////            surfaceView.setBackgroundColor(R.color.black_a10_color);
-//            CURRENT_STATE = CURRENT_STATE_NORMAL;
-//            setKeepScreenOn(false);
-//            sendPointEvent(ifFullScreen ? VideoEvents.POINT_AUTO_COMPLETE_FULLSCREEN : VideoEvents.POINT_AUTO_COMPLETE);
+//            if (CURRENT_STATE != CURRENT_STATE_PREPAREING) {
+            cancelProgressTimer();
+            ivStart.setImageResource(R.drawable.click_video_play_selector);
+            ivThumb.setVisibility(View.VISIBLE);
+            ivStart.setVisibility(View.VISIBLE);
+            JCMediaManager.intance().mediaPlayer.setDisplay(null);
+            //TODO 这里要将背景置黑，
+//            surfaceView.setBackgroundColor(R.color.black_a10_color);
+            CURRENT_STATE = CURRENT_STATE_NORMAL;
+            setKeepScreenOn(false);
+            sendPointEvent(ifFullScreen ? VideoEvents.POINT_AUTO_COMPLETE_FULLSCREEN : VideoEvents.POINT_AUTO_COMPLETE);
             setUp(url,"","");
         }
         if (!JCMediaManager.intance().uuid.equals(uuid)) {

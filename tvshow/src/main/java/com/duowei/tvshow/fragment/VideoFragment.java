@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +45,7 @@ public class VideoFragment extends Fragment{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View inflate = inflater.inflate(R.layout.fragment_main, container, false);
-        mJcVideoPlayer = (JCVideoPlayer) inflate.findViewById(R.id.jcvideoplayer);
+        mJcVideoPlayer = (JCVideoPlayer) inflate.findViewById(R.id.jcvideoplayer_full);
         return inflate;
     }
     @Override
@@ -54,6 +55,7 @@ public class VideoFragment extends Fragment{
 
     @Override
     public void onResume() {
+        super.onResume();
         if(!TextUtils.isEmpty(mVideoname)){
             File file = new File(FileDir.getVideoName() + mVideoname);
             if(!file.exists()){
@@ -62,13 +64,12 @@ public class VideoFragment extends Fragment{
                 mJcVideoPlayer.setUp(FileDir.getVideoName()+mVideoname,"", "");
             }
         }
-        super.onResume();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        JCVideoPlayer.releaseAllVideos();
+//        JCVideoPlayer.releaseAllVideos();
     }
 
     @Override

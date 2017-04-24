@@ -4,7 +4,7 @@
              android:layout_height="match_parent"
              tools:context="com.duowei.tvshow.fragment.VideoFragment">
     <fm.jiecao.jcvideoplayer_lib.JCVideoPlayer
-        android:id="@+id/jcvideoplayer"
+        android:id="@+id/jcvideoplayer_full"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </fm.jiecao.jcvideoplayer_lib.JCVideoPlayer>
