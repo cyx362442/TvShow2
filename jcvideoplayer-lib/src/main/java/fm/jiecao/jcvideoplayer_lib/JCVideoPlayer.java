@@ -229,7 +229,7 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
         tvTitle.setText(title);
         ivThumb.setVisibility(View.VISIBLE);
         ivStart.setVisibility(View.VISIBLE);
-//        llBottomControl.setVisibility(View.INVISIBLE);
+        llBottomControl.setVisibility(View.INVISIBLE);
         pbBottom.setVisibility(View.VISIBLE);
         CURRENT_STATE = CURRENT_STATE_NORMAL;
         setTitleVisibility(View.VISIBLE);
@@ -324,7 +324,7 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
             if (!ifMp3) {
                 ivCover.setVisibility(View.INVISIBLE);
             }
-//            llBottomControl.setVisibility(View.VISIBLE);
+            llBottomControl.setVisibility(View.VISIBLE);
             pbBottom.setVisibility(View.INVISIBLE);
             CURRENT_STATE = CURRENT_STATE_PLAYING;
             startDismissControlViewTimer();
@@ -472,7 +472,7 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
                 pbBottom.setVisibility(View.VISIBLE);
                 setTitleVisibility(View.INVISIBLE);
             } else {
-//                llBottomControl.setVisibility(View.VISIBLE);
+                llBottomControl.setVisibility(View.VISIBLE);
                 pbBottom.setVisibility(View.INVISIBLE);
                 setTitleVisibility(View.VISIBLE);
             }
@@ -487,7 +487,7 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
             } else {
                 updateStartImage();
                 ivStart.setVisibility(View.VISIBLE);
-//                llBottomControl.setVisibility(View.VISIBLE);
+                llBottomControl.setVisibility(View.VISIBLE);
                 pbBottom.setVisibility(View.INVISIBLE);
                 setTitleVisibility(View.VISIBLE);
             }
@@ -501,7 +501,7 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
             } else {
                 updateStartImage();
                 ivStart.setVisibility(View.VISIBLE);
-//                llBottomControl.setVisibility(View.VISIBLE);
+                llBottomControl.setVisibility(View.VISIBLE);
                 pbBottom.setVisibility(View.INVISIBLE);
                 setTitleVisibility(View.VISIBLE);
             }

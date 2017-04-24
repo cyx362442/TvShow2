@@ -74,8 +74,6 @@ public class ShowActivity extends AppCompatActivity {
             Picasso.with(this).load(mFile).fit().centerInside().into(mImageView);
         }else if(intent.getStringExtra("video_name")!=null&&intent.getStringExtra("image_name")!=null){
             mFile=new File(FileDir.getVideoName()+intent.getStringExtra("image_name"));//拼接图片路径
-            JCVideoPlayer.releaseAllVideos();
-            removeFragment();//删除上次视频
             Picasso.with(ShowActivity.this).load(mFile).fit().centerInside().into(mImageView);
             mFragment=new VideoFragment();
             int place = Integer.parseInt(intent.getStringExtra("video_palce"));//视频位置
@@ -197,7 +195,7 @@ public class ShowActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-//        JCVideoPlayer.releaseAllVideos();
+        JCVideoPlayer.releaseAllVideos();
         EventBus.getDefault().unregister(this);
         if(mHandler!=null){
             mHandler.removeCallbacks(mRun);

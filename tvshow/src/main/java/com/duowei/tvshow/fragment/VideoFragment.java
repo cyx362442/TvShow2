@@ -69,7 +69,7 @@ public class VideoFragment extends Fragment{
     @Override
     public void onStop() {
         super.onStop();
-//        JCVideoPlayer.releaseAllVideos();
+        JCVideoPlayer.releaseAllVideos();
     }
 
     @Override
