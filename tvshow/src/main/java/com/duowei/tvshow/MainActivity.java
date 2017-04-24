@@ -1,18 +1,37 @@
 package com.duowei.tvshow;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.duowei.tvshow.bean.OneDataBean;
+import com.duowei.tvshow.contact.ConstsCode;
 import com.duowei.tvshow.contact.FileDir;
+import com.duowei.tvshow.event.FinishEvent;
+import com.duowei.tvshow.fragment.VideoFragment;
 import com.duowei.tvshow.image_video.ImageDir;
 import com.duowei.tvshow.image_video.PhotoSelectorActivity;
 import com.duowei.tvshow.service.BroadService;
+import com.duowei.tvshow.utils.CurrentTime;
+import com.squareup.picasso.Picasso;
+
+import org.litepal.crud.DataSupport;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+
+import de.greenrobot.event.EventBus;
+import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int REQUEST_CODE_GET_PHOTOS = 1000;
@@ -29,20 +48,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Intent mIntent;
     private Intent mIntentService;
+    private ServiceBroadCast mBroadCast;
+    private int mLastTime=0;
+    private ArrayList<String>listUrl=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.view_start).setOnClickListener(this);
-        findViewById(R.id.view_image).setOnClickListener(this);
-        findViewById(R.id.view_movie).setOnClickListener(this);
-        findViewById(R.id.view_setting).setOnClickListener(this);
-        findViewById(R.id.view_exit).setOnClickListener(this);
-
-        mIntent = new Intent(this, ShowActivity.class);
-        startActivity(mIntent);
+        initUI();
+//        mIntent = new Intent(this, ShowActivity.class);
+//        startActivity(mIntent);
         mIntentService = new Intent(this, BroadService.class);
         startService(mIntentService);
+        //开启时间段轮询
+        startShow();
+    }
+
+    /**启用广播 */
+    public class ServiceBroadCast extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            /**节目更新*/
+            if(mLastTime> CurrentTime.getTime()){//上次时间段还未结束,返回，继续之前播放
+                return;
+            }
+            if(action.equals(ConstsCode.ACTION_START_HEART)){
+                startShow();
+            }
+        }
     }
 
     @Override
@@ -53,6 +87,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        mLastTime=0;
+        //节目伦询
+        IntentFilter intentFilter = new IntentFilter(ConstsCode.ACTION_START_HEART);
+        mBroadCast = new ServiceBroadCast();
+        registerReceiver(mBroadCast,intentFilter);
     }
 
     @Override
@@ -61,6 +100,72 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(mIntentService!=null){
             stopService(mIntentService);
         }
+        unregisterReceiver(mBroadCast);
+    }
+
+    private void initUI() {
+        findViewById(R.id.view_start).setOnClickListener(this);
+        findViewById(R.id.view_image).setOnClickListener(this);
+        findViewById(R.id.view_movie).setOnClickListener(this);
+        findViewById(R.id.view_setting).setOnClickListener(this);
+        findViewById(R.id.view_exit).setOnClickListener(this);
+    }
+
+    /**时间段节目轮询*/
+    private void startShow() {
+        List<OneDataBean> list = DataSupport.findAll(OneDataBean.class);
+        for(OneDataBean bean:list){
+            String time = bean.time.trim();
+            boolean newTime = isNewTime(time);
+            if(newTime==true){//发现新的时间段
+                EventBus.getDefault().post(new FinishEvent());
+                /**纯图片播放模式*/
+                if(!bean.image_name.equals("null")&&bean.video_name.equals("null")){
+                    Intent intent = new Intent(this, ShowActivity.class);
+                    intent.putExtra("image_name",bean.image_name);
+                    intent.putExtra("ad",bean.ad);
+                    intent.putExtra("color",bean.color);
+                    startActivity(intent);
+                }
+                /**纯视频播放模式*/
+                else if(!bean.video_name.equals("null")&&bean.image_name.equals("null")){
+                    listUrl.clear();
+                    listUrl.add(FileDir.getVideoName()+bean.video_name);
+                    Intent intent = new Intent(this, VideoFullActivity.class);
+                    intent.putStringArrayListExtra("selectPaths",listUrl);
+                    intent.putExtra("ad",bean.ad);
+                    intent.putExtra("color",bean.color);
+                    startActivity(intent);
+                }
+                /**图片、视频混合模式*/
+                else if(!bean.video_name.equals("null")&&!bean.image_name.equals("null")){
+                    Intent intent = new Intent(this, ShowActivity.class);
+                    intent.putExtra("image_name",bean.image_name);
+                    intent.putExtra("video_name",bean.video_name);
+                    intent.putExtra("video_palce",bean.video_palce);
+                    intent.putExtra("ad",bean.ad);
+                    intent.putExtra("color",bean.color);
+                    startActivity(intent);
+                }
+                break;
+            }
+        }
+    }
+
+    /**当前系统时间是否在某个时间段内*/
+    private boolean isNewTime(String time) {
+        boolean b;
+        String firstTime = time.substring(0, time.indexOf("-")).trim().replace(":","");
+        String lastTime = time.substring(time.indexOf("-") + 1, time.length()).trim().replace(":","");
+        int first = Integer.parseInt(firstTime);
+        int last = Integer.parseInt(lastTime);
+        if(CurrentTime.getTime()>=first&&CurrentTime.getTime()<last){
+            b=true;
+            mLastTime=last;
+        }else{
+            b=false;
+        }
+        return b;
     }
 
     @Override

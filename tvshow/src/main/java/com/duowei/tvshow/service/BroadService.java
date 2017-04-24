@@ -21,7 +21,7 @@ public class BroadService extends Service {
     private AlarmManager mAlarmManager;
 
     private PendingIntent mPendingIntent;
-    private PendingIntent mPendingIntentCALL;
+//    private PendingIntent mPendingIntentCALL;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -35,8 +35,8 @@ public class BroadService extends Service {
         mPendingIntent = PendingIntent.getBroadcast(this, 10000, new Intent(
                 ConstsCode.ACTION_START_HEART), PendingIntent.FLAG_UPDATE_CURRENT);
 
-        mPendingIntentCALL = PendingIntent.getBroadcast(this, 5000, new Intent(
-                ConstsCode.ACTION_START_CALL), PendingIntent.FLAG_UPDATE_CURRENT);
+//        mPendingIntentCALL = PendingIntent.getBroadcast(this, 5000, new Intent(
+//                ConstsCode.ACTION_START_CALL), PendingIntent.FLAG_UPDATE_CURRENT);
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

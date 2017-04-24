@@ -9,7 +9,6 @@ import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -20,6 +19,7 @@ import com.duowei.tvshow.bean.OneDataBean;
 import com.duowei.tvshow.bean.ZoneTime;
 import com.duowei.tvshow.contact.Consts;
 import com.duowei.tvshow.contact.FileDir;
+import com.duowei.tvshow.event.ReConnect;
 import com.duowei.tvshow.helper.VersionUpdate;
 import com.duowei.tvshow.helper.VersionUpdateImpl;
 import com.duowei.tvshow.httputils.AsyncUtils;
@@ -33,13 +33,11 @@ import com.google.gson.Gson;
 import org.litepal.crud.DataSupport;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.duowei.tvshow.service.DownloadService.BUNDLE_KEY_DOWNLOAD_FILE;
-import static com.duowei.tvshow.service.DownloadService.BUNDLE_KEY_DOWNLOAD_NAME;
+import de.greenrobot.event.EventBus;
 
 public class WelcomeActivity extends AppCompatActivity implements VersionUpdateImpl {
 
@@ -94,7 +92,7 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-
+        EventBus.getDefault().register(this);
         bnp = (NumberProgressBar) findViewById(R.id.number_bar);
         mLl_loading = (LinearLayout) findViewById(R.id.ll_loading);
         if(!Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){
@@ -103,6 +101,11 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
         }
         if (getPreferData()) return;
         Http_contents();
+    }
+
+    //第一次连接失败，重新下载连接
+    public void onEventMainThread(ReConnect event){
+       Http_File(mDown_data);
     }
 
     private boolean getPreferData() {
@@ -203,9 +206,9 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
                     /**下载图片、视频*/
 //                    Http_File("http://7xpj8w.com1.z0.glb.clouddn.com/video15.zip");
 //                    startDownLoad("http://7xpj8w.com1.z0.glb.clouddn.com/video15.zip");
-//                    Http_File(down_data);
+                    Http_File(mDown_data);
 //                    startDownLoad(down_data);
-                    VersionUpdate.checkVersion(WelcomeActivity.this,mDown_data);
+//                    VersionUpdate.checkVersion(WelcomeActivity.this,mDown_data);
 //                    VersionUpdate.checkVersion(WelcomeActivity.this,"http://7xpj8w.com1.z0.glb.clouddn.com/video15.zip");
                 }
             }
@@ -250,6 +253,12 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
 //        bundle.putSerializable(DownloadService.BUNDLE_KEY_DOWNLOAD_FILE, (Serializable) listFile);
 //        intent.putExtras(bundle);
         isBindService = bindService(intent, conn, BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

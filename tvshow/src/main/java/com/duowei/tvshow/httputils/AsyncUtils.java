@@ -1,15 +1,12 @@
 package com.duowei.tvshow.httputils;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.duowei.tvshow.MainActivity;
 import com.duowei.tvshow.contact.FileDir;
+import com.duowei.tvshow.event.ReConnect;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,7 +15,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by Administrator on 2017-01-09.
@@ -108,10 +106,7 @@ public class AsyncUtils extends AsyncTask<String, Integer, Integer> {
                 break;
             case -1:
                 mProgressDialog.dismiss();
-                Intent intent = new Intent(context, MainActivity.class);
-                context.startActivity(intent);
-                Activity context = (Activity) AsyncUtils.this.context;
-                context.finish();
+                EventBus.getDefault().post(new ReConnect());
                 Toast.makeText(context,"下载失败",Toast.LENGTH_SHORT).show();
                 break;
             case 1:

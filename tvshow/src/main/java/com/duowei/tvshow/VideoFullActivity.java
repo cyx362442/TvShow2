@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 
@@ -14,6 +15,7 @@ import com.duowei.tvshow.event.CallEvent;
 import com.duowei.tvshow.event.FinishEvent;
 import com.duowei.tvshow.httputils.Post6;
 import com.duowei.tvshow.httputils.Post7;
+import com.duowei.tvshow.view.TextSurfaceView;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechSynthesizer;
 
@@ -27,22 +29,24 @@ import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 public class VideoFullActivity extends AppCompatActivity{
     private ArrayList<String> videoPath;
     private JCVideoPlayer mJcVideoPlayer;
+    private TextSurfaceView mTsfv;
     // 语音合成对象
     private SpeechSynthesizer mTts;
     private CallDialog mCallDialog;
     private Handler mHandler;
     private Runnable mRun;
+    private Intent mIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_full);
-        Intent intent = getIntent();
-        if(intent==null){
+        mIntent = getIntent();
+        if(mIntent ==null){
             Toast.makeText(this,"找到不到视频",Toast.LENGTH_LONG).show();
             return;
         }
-        videoPath = intent.getStringArrayListExtra("selectPaths");
-
+        videoPath = mIntent.getStringArrayListExtra("selectPaths");
         EventBus.getDefault().register(this);
         //开启呼叫轮询
         startCall();
@@ -127,10 +131,25 @@ public class VideoFullActivity extends AppCompatActivity{
     protected void onResume() {
         super.onResume();
         mJcVideoPlayer = (JCVideoPlayer) findViewById(R.id.jcvideoplayer);
+        mTsfv = (TextSurfaceView) findViewById(R.id.textsurfaceview);
         //从第一部开始播放
 //        mJcVideoPlayer.setUp(videoPath.get(0), MyJVCPlayer.SCREEN_LAYOUT_NORMAL, "");
 //        mJcVideoPlayer.setUp(videoPath.get(0),videoPath.get(0),"视频",true);
         mJcVideoPlayer.setUp(videoPath.get(0),"","");
+        /**滚动文字内容*/
+        if(!TextUtils.isEmpty(mIntent.getStringExtra("ad"))){
+            mTsfv.setMove(true);
+            mTsfv.setContent("    "+mIntent.getStringExtra("ad"));
+        }else{
+            mTsfv.setMove(false);
+            mTsfv.setContent("");
+        }
+        /**滚动文字颜色*/
+        if(!TextUtils.isEmpty(mIntent.getStringExtra("color"))){
+            mTsfv.setFontColor(mIntent.getStringExtra("color"));
+        }else{
+            mTsfv.setFontColor("#ffffff");
+        }
     }
 
     @Override
