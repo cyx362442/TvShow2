@@ -99,9 +99,6 @@ public class ShowActivity extends AppCompatActivity {
         }else{
             mTsfv.setFontColor("#ffffff");
         }
-
-        //开启时间段轮询
-//        startShow();
         //开启呼叫轮询
         startCall();
         // 初始化合成对象
@@ -184,15 +181,7 @@ public class ShowActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mLastTime=0;
-        //节目伦询
-        IntentFilter intentFilter = new IntentFilter(ConstsCode.ACTION_START_HEART);
-        //呼叫伦询
-//        IntentFilter intentFilter2 = new IntentFilter(ConstsCode.ACTION_START_CALL);
-//        mBroadCast = new ServiceBroadCast();
-//        registerReceiver(mBroadCast,intentFilter);
-//        registerReceiver(mBroadCast,intentFilter2);
     }
-
     @Override
     protected void onStop() {
         JCVideoPlayer.releaseAllVideos();
@@ -202,84 +191,6 @@ public class ShowActivity extends AppCompatActivity {
         }
         super.onStop();
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-//        unregisterReceiver(mBroadCast);
-    }
-
-//    /**启用广播 */
-//    public class ServiceBroadCast extends BroadcastReceiver {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            String action = intent.getAction();
-//            /**节目更新*/
-//            if(mLastTime>CurrentTime.getTime()){//上次时间段还未结束,返回，继续之前播放
-//                return;
-//              }
-//            if(action.equals(ConstsCode.ACTION_START_HEART)){
-//                startShow();
-//            }
-//        }
-//    }
-
-    /**时间段节目轮询*/
-    private void startShow() {
-        List<OneDataBean> list = DataSupport.findAll(OneDataBean.class);
-        for(OneDataBean bean:list){
-            String time = bean.time.trim();
-            boolean newTime = isNewTime(time);
-            if(newTime==true){//发现新的时间段
-                EventBus.getDefault().post(new FinishEvent());
-                    mFile=new File(FileDir.getVideoName()+bean.image_name);//拼接图片路径
-                    /**纯图片播放模式*/
-                    if(!bean.image_name.equals("null")&&bean.video_name.equals("null")){
-                        Picasso.with(ShowActivity.this).load(mFile).fit().centerInside().into(mImageView);
-                    }
-                    /**纯视频播放模式*/
-                    else if(!bean.video_name.equals("null")&&bean.image_name.equals("null")){
-                        listUrl.clear();
-                        listUrl.add(FileDir.getVideoName()+bean.video_name);
-                        Intent intent = new Intent(this, VideoFullActivity.class);
-                        intent.putStringArrayListExtra("selectPaths",listUrl);
-                        startActivity(intent);
-                    }
-                    /**图片、视频混合模式*/
-                    else if(!bean.video_name.equals("null")&&!bean.image_name.equals("null")){
-                        JCVideoPlayer.releaseAllVideos();
-                        removeFragment();//删除上次视频
-                        Picasso.with(ShowActivity.this).load(mFile).fit().centerInside().into(mImageView);
-                        mFragment=new VideoFragment();
-                        int place = Integer.parseInt(bean.video_palce);//视频位置
-                        Bundle bundle = new Bundle();
-                        bundle.putString("videoname",bean.video_name);
-                        mFragment.setArguments(bundle);
-                        FragmentManager fragmentManager = getSupportFragmentManager();
-                        FragmentTransaction transaction = fragmentManager.beginTransaction();
-                        transaction.replace(mId[place-1],mFragment);
-                        transaction.commit();
-                    }
-
-                    /**滚动文字内容*/
-                    if(!TextUtils.isEmpty(bean.ad)){
-                        mTsfv.setMove(true);
-                        mTsfv.setContent("    "+bean.ad);
-                    }else{
-                        mTsfv.setMove(false);
-                        mTsfv.setContent("");
-                    }
-                    /**滚动文字颜色*/
-                    if(!TextUtils.isEmpty(bean.color)){
-                        mTsfv.setFontColor(bean.color);
-                    }else{
-                        mTsfv.setFontColor("#ffffff");
-                    }
-                break;
-            }
-        }
-    }
-
     /**呼叫轮询*/
     private void startCall() {
         //呼叫显示时间
@@ -298,30 +209,5 @@ public class ShowActivity extends AppCompatActivity {
                 Log.e("呼叫===","开始……");
             }
         },5000);
-    }
-
-    private void removeFragment() {
-        if(mFragment!=null){//删除上一次的视频
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.remove(mFragment);
-            transaction.commit();
-        }
-    }
-
-    /**当前系统时间是否在某个时间段内*/
-    private boolean isNewTime(String time) {
-        boolean b;
-        String firstTime = time.substring(0, time.indexOf("-")).trim().replace(":","");
-        String lastTime = time.substring(time.indexOf("-") + 1, time.length()).trim().replace(":","");
-        int first = Integer.parseInt(firstTime);
-        int last = Integer.parseInt(lastTime);
-        if(CurrentTime.getTime()>=first&&CurrentTime.getTime()<last){
-            b=true;
-            mLastTime=last;
-        }else{
-            b=false;
-        }
-        return b;
     }
 }
