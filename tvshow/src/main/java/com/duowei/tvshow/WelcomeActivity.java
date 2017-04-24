@@ -6,13 +6,11 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.os.IBinder;
-import android.os.Process;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -21,7 +19,6 @@ import com.duowei.tvshow.bean.OneDataBean;
 import com.duowei.tvshow.bean.ZoneTime;
 import com.duowei.tvshow.contact.Consts;
 import com.duowei.tvshow.contact.FileDir;
-import com.duowei.tvshow.event.ConnectSuccess;
 import com.duowei.tvshow.event.ReConnect;
 import com.duowei.tvshow.helper.VersionUpdate;
 import com.duowei.tvshow.helper.VersionUpdateImpl;
@@ -90,7 +87,6 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
     };
     private LinearLayout mLl_loading;
     private String mDown_data;
-    private ProgressBar mPb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +95,6 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
         EventBus.getDefault().register(this);
         bnp = (NumberProgressBar) findViewById(R.id.number_bar);
         mLl_loading = (LinearLayout) findViewById(R.id.ll_loading);
-        mPb = (ProgressBar) findViewById(R.id.progress);
         if(!Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){
             Toast.makeText(this,"当前内存卡不可用",Toast.LENGTH_LONG).show();
             return;
@@ -108,9 +103,9 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
         Http_contents();
     }
 
-
-    public void onEventMainThread(ConnectSuccess event){
-       mPb.setVisibility(View.GONE);
+    //第一次连接失败，重新下载连接
+    public void onEventMainThread(ReConnect event){
+       Http_File(mDown_data);
     }
 
     private boolean getPreferData() {
