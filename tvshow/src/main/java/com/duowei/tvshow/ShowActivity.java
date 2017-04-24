@@ -21,6 +21,7 @@ import com.duowei.tvshow.contact.ConstsCode;
 import com.duowei.tvshow.contact.FileDir;
 import com.duowei.tvshow.dialog.CallDialog;
 import com.duowei.tvshow.event.CallEvent;
+import com.duowei.tvshow.event.FinishEvent;
 import com.duowei.tvshow.fragment.VideoFragment;
 import com.duowei.tvshow.httputils.Post6;
 import com.duowei.tvshow.httputils.Post7;
@@ -36,9 +37,11 @@ import org.greenrobot.eventbus.Subscribe;
 import org.litepal.crud.DataSupport;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import fm.jiecao.jcvideoplayer_lib.FullScreenActivity;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 
 public class ShowActivity extends AppCompatActivity {
@@ -52,6 +55,7 @@ public class ShowActivity extends AppCompatActivity {
     private CallDialog mCallDialog;
     private Handler mHandler;
     private Runnable mRun;
+    private ArrayList<String>listUrl=new ArrayList<>();
     // 语音合成对象
     private SpeechSynthesizer mTts;
     @Override
@@ -194,14 +198,23 @@ public class ShowActivity extends AppCompatActivity {
             if(newTime==true){//发现新的时间段
                 JCVideoPlayer.releaseAllVideos();
                 removeFragment();//删除上次视频
+                EventBus.getDefault().post(new FinishEvent());
                     mFile=new File(FileDir.getVideoName()+bean.image_name);//拼接图片路径
-                    if(mFile.exists()){//文件存在则读取
+                    /**纯图片播放模式*/
+                    if(!bean.image_name.equals("null")&&bean.video_name.equals("null")){
                         Picasso.with(ShowActivity.this).load(mFile).fit().centerInside().into(mImageView);
-                    }else{//不存在设一张默认的图片
-                        Picasso.with(ShowActivity.this).load(R.mipmap.bg).fit().centerInside().into(mImageView);
                     }
-                    /**视频文件存在*/
-                    if(!bean.video_name.equals("null")){
+                    /**纯视频播放模式*/
+                    else if(!bean.video_name.equals("null")&&bean.image_name.equals("null")){
+                        listUrl.clear();
+                        listUrl.add(FileDir.getVideoName()+bean.video_name);
+                        Intent intent = new Intent(this, VideoFullActivity.class);
+                        intent.putStringArrayListExtra("selectPaths",listUrl);
+                        startActivity(intent);
+                    }
+                    /**图片、视频混合模式*/
+                    else if(!bean.video_name.equals("null")&&!bean.image_name.equals("null")){
+                        Picasso.with(ShowActivity.this).load(mFile).fit().centerInside().into(mImageView);
                         mFragment=new VideoFragment();
                         int place = Integer.parseInt(bean.video_palce);//视频位置
                         Bundle bundle = new Bundle();
@@ -212,6 +225,18 @@ public class ShowActivity extends AppCompatActivity {
                         transaction.replace(mId[place-1],mFragment);
                         transaction.commit();
                     }
+//                    /**视频文件存在*/
+//                    if(!bean.video_name.equals("null")){
+//                        mFragment=new VideoFragment();
+//                        int place = Integer.parseInt(bean.video_palce);//视频位置
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString("videoname",bean.video_name);
+//                        mFragment.setArguments(bundle);
+//                        FragmentManager fragmentManager = getSupportFragmentManager();
+//                        FragmentTransaction transaction = fragmentManager.beginTransaction();
+//                        transaction.replace(mId[place-1],mFragment);
+//                        transaction.commit();
+//                    }
                     /**滚动文字内容*/
                     if(!TextUtils.isEmpty(bean.ad)){
                         mTsfv.setMove(true);

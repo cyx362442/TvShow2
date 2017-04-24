@@ -75,6 +75,10 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
                         isBindService = false;
                         //解压、删除文件
                         deleteDir();
+                    }else if(fraction==DownloadService.UNCONNECT){
+                        unbindService(conn);
+                        isBindService = false;
+                        VersionUpdate.checkVersion(WelcomeActivity.this,mDown_data);
                     }
                 }
             });
@@ -84,6 +88,8 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
         }
     };
     private LinearLayout mLl_loading;
+    private String mDown_data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,9 +160,8 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
                 }else{//版本号不同更新
                     listFile.clear();
                     mOneDataBeanList.clear();
-
                     Consts.version=version;
-                    String down_data = zoneTime.getDown_data();//压缩包下载地址
+                    mDown_data = zoneTime.getDown_data();//压缩包下载地址
                     List<ZoneTime.ZoneTimeBean> list_zone = zoneTime.getZone_time();//电视区域信息
                     DataSupport.deleteAll(OneDataBean.class);
                     /**找到该电视区号对应的数据信息集*/
@@ -200,7 +205,7 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
 //                    startDownLoad("http://7xpj8w.com1.z0.glb.clouddn.com/video15.zip");
 //                    Http_File(down_data);
 //                    startDownLoad(down_data);
-                    VersionUpdate.checkVersion(WelcomeActivity.this,down_data);
+                    VersionUpdate.checkVersion(WelcomeActivity.this,mDown_data);
 //                    VersionUpdate.checkVersion(WelcomeActivity.this,"http://7xpj8w.com1.z0.glb.clouddn.com/video15.zip");
                 }
             }

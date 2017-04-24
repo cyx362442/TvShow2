@@ -16,13 +16,9 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
-import com.duowei.tvshow.bean.LoadFile;
 import com.duowei.tvshow.contact.FileDir;
-import com.nostra13.universalimageloader.utils.L;
 
 import java.io.File;
-import java.io.Serializable;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +30,7 @@ public class DownloadService extends Service {
     public static final String BUNDLE_KEY_DOWNLOAD_FILE="download_FILE";
 
     public static final float UNBIND_SERVICE = 2.0F;
+    public static final float UNCONNECT=-1.0F;
 
     private Activity activity;
     private DownloadBinder binder;
@@ -237,9 +234,12 @@ public class DownloadService extends Service {
 //                            LogUtil.i(TAG, "广播监听下载完成，APK存储路径为 ：" + downIdUri.getPath());
 //                            SPUtil.put(Constant.SP_DOWNLOAD_PATH, downIdUri.getPath());
 //                            APPUtil.installApk(context, downIdUri);
-                        }
-                        if (onProgressListener != null) {
-                            onProgressListener.onProgress(UNBIND_SERVICE);
+                            if (onProgressListener != null) {
+                                onProgressListener.onProgress(UNBIND_SERVICE);
+                            }
+                        }else{
+                            Log.e("=====","下载链接失败");
+                            onProgressListener.onProgress(UNCONNECT);
                         }
                     }
                     break;

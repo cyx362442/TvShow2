@@ -11,6 +11,7 @@ import com.duowei.tvshow.bean.KDSCall;
 import com.duowei.tvshow.contact.Consts;
 import com.duowei.tvshow.dialog.CallDialog;
 import com.duowei.tvshow.event.CallEvent;
+import com.duowei.tvshow.event.FinishEvent;
 import com.duowei.tvshow.httputils.Post6;
 import com.duowei.tvshow.httputils.Post7;
 import com.iflytek.cloud.SpeechConstant;
@@ -118,6 +119,10 @@ public class VideoFullActivity extends AppCompatActivity{
         }).start();
     }
 
+    public void onEventMainThread(FinishEvent event){
+        finish();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -133,13 +138,13 @@ public class VideoFullActivity extends AppCompatActivity{
         super.onStop();
         JCVideoPlayer.releaseAllVideos();
         EventBus.getDefault().unregister(this);
+        if(mHandler!=null){
+            mHandler.removeCallbacks(mRun);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(mHandler!=null){
-            mHandler.removeCallbacks(mRun);
-        }
     }
 }
