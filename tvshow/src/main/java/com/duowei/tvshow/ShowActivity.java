@@ -1,9 +1,6 @@
 package com.duowei.tvshow;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,9 +12,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.duowei.tvshow.bean.KDSCall;
-import com.duowei.tvshow.bean.OneDataBean;
 import com.duowei.tvshow.contact.Consts;
-import com.duowei.tvshow.contact.ConstsCode;
 import com.duowei.tvshow.contact.FileDir;
 import com.duowei.tvshow.dialog.CallDialog;
 import com.duowei.tvshow.event.CallEvent;
@@ -25,7 +20,6 @@ import com.duowei.tvshow.event.FinishEvent;
 import com.duowei.tvshow.fragment.VideoFragment;
 import com.duowei.tvshow.httputils.Post6;
 import com.duowei.tvshow.httputils.Post7;
-import com.duowei.tvshow.utils.CurrentTime;
 import com.duowei.tvshow.view.TextSurfaceView;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
@@ -34,18 +28,14 @@ import com.iflytek.cloud.SpeechSynthesizer;
 import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.Subscribe;
-import org.litepal.crud.DataSupport;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import de.greenrobot.event.EventBus;
-import fm.jiecao.jcvideoplayer_lib.FullScreenActivity;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 
 public class ShowActivity extends AppCompatActivity {
-//    private ServiceBroadCast mBroadCast;
     private ImageView mImageView;
     private int[] mId;
     private File mFile;
