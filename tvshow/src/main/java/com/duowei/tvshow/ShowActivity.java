@@ -166,7 +166,7 @@ public class ShowActivity extends AppCompatActivity {
             }
         }).start();
     }
-
+    //时间段播放结束
     public void onEventMainThread(FinishEvent event){
         finish();
     }

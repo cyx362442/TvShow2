@@ -15,6 +15,6 @@
     <com.duowei.tvshow.view.TextSurfaceView
         android:id="@+id/textsurfaceview"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="85dp"
         android:layout_alignParentBottom="true"/>
 </RelativeLayout>

@@ -168,7 +168,6 @@ public class TextSurfaceView extends SurfaceView implements Callback, Runnable{
             textContentWith = paint.measureText(content);
             textHeigth = getFontHeight(this.fontSize);
 
-        Log.e("WIDTH:",""+getWidth());
         if(isMove){//滚动效果
             Log.i("surfaceCreated:",textContentWith+"");
             if(orientation == MOVE_LEFT){
@@ -354,6 +353,6 @@ public class TextSurfaceView extends SurfaceView implements Callback, Runnable{
         paint.setTextSize(fontSize);
         Paint.FontMetrics fm = paint.getFontMetrics();
 //        return (int) Math.ceil(fm.descent - fm.top)-2;
-        return (int)((fm.descent - fm.ascent) / 2 - 100);
+        return (int)((fm.descent - fm.ascent) / 2 - 90);
     }
 }
