@@ -55,7 +55,6 @@ public class AsyncUtils extends AsyncTask<String, Integer, Integer> {
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();//开启连接
             urlConnection.connect();
             urlConnection.setConnectTimeout(5*1000);  //设置超时时间
-            urlConnection.setReadTimeout(5*1000);
             lenghtOfFile = urlConnection.getContentLength();//获取下载文件的总长度
             is = urlConnection.getInputStream();// 开启流
             fos = new FileOutputStream(fileZip);// 开启写的流

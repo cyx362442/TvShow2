@@ -109,7 +109,7 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
 
     //第一次连接失败，重新下载连接
     public void onEventMainThread(ReConnect event) throws InterruptedException {
-        Thread.sleep(500);
+        Thread.sleep(1000);
        Http_File(mDown_data);
     }
 

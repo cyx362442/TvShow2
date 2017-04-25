@@ -170,8 +170,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.view_start:
-                mIntent = new Intent(this, ShowActivity.class);
-                startActivity(mIntent);
+//                mIntent = new Intent(this, ShowActivity.class);
+//                startActivity(mIntent);
+                startShow();
                 break;
             case R.id.view_movie:
                 ArrayList<String> videoPath = FileDir.getVideoPath();
