@@ -108,10 +108,9 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
     }
 
     //第一次连接失败，重新下载连接
-    public void onEventMainThread(ReConnect event){
+    public void onEventMainThread(ReConnect event) throws InterruptedException {
+        Thread.sleep(500);
        Http_File(mDown_data);
-        mLl_loading2.setVisibility(View.GONE);
-        Log.e("=======","重新连接……");
     }
 
     private boolean getPreferData() {

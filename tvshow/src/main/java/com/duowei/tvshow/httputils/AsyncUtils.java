@@ -24,9 +24,18 @@ import de.greenrobot.event.EventBus;
 
 public class AsyncUtils extends AsyncTask<String, Integer, Integer> {
     Context context;
-    private  ProgressDialog mProgressDialog;
+    private ProgressDialog mProgressDialog;
+
     public AsyncUtils(Context context) {
         this.context = context;
+        mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.setTitle("提示");
+        mProgressDialog.setMessage("文件下载中……");
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setCancelable(true);// 设置是否可以通过点击Back键取消
+        mProgressDialog.setCanceledOnTouchOutside(false);// 设置在点击Dialog外是否取消Dialog进度条
+        mProgressDialog.show();
     }
     @Override
     protected Integer doInBackground(String... params) {
@@ -47,21 +56,6 @@ public class AsyncUtils extends AsyncTask<String, Integer, Integer> {
             urlConnection.connect();
             urlConnection.setConnectTimeout(5*1000);  //设置超时时间
             urlConnection.setReadTimeout(5*1000);
-            if(urlConnection.getResponseCode()==HttpURLConnection.HTTP_OK){
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProgressDialog = new ProgressDialog(context);
-                        mProgressDialog.setTitle("提示");
-                        mProgressDialog.setMessage("文件下载中……");
-                        mProgressDialog.setIndeterminate(true);
-                        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                        mProgressDialog.setCancelable(true);// 设置是否可以通过点击Back键取消
-                        mProgressDialog.setCanceledOnTouchOutside(false);// 设置在点击Dialog外是否取消Dialog进度条
-                        mProgressDialog.show();
-                    }
-                }).start();
-            }
             lenghtOfFile = urlConnection.getContentLength();//获取下载文件的总长度
             is = urlConnection.getInputStream();// 开启流
             fos = new FileOutputStream(fileZip);// 开启写的流
@@ -113,9 +107,9 @@ public class AsyncUtils extends AsyncTask<String, Integer, Integer> {
                 mProgressDialog.dismiss();
                 break;
             case -1:
-//                mProgressDialog.dismiss();
+                mProgressDialog.dismiss();
                 EventBus.getDefault().post(new ReConnect());
-                Toast.makeText(context,"下载失败",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"下载连接失败",Toast.LENGTH_SHORT).show();
                 break;
             case 1:
                 mProgressDialog.setMessage("下载成功，正在解压中……");
