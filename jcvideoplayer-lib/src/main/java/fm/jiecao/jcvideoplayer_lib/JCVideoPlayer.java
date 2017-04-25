@@ -195,7 +195,6 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
         ivStart.setVisibility(View.VISIBLE);
         llBottomControl.setVisibility(View.INVISIBLE);
         pbBottom.setVisibility(View.VISIBLE);
-//        ImageLoader.getInstance().displayImage(thumb, ivThumb, Utils.getDefaultDisplayImageOption());
         CURRENT_STATE = CURRENT_STATE_NORMAL;
         setTitleVisibility(View.VISIBLE);
         if (uuid.equals(JCMediaManager.intance().uuid)) {
@@ -259,7 +258,7 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
         } else if (CURRENT_STATE == CURRENT_STATE_PLAYING) {
             updateStartImage();
             ivStart.setVisibility(View.VISIBLE);
-            llBottomControl.setVisibility(View.VISIBLE);
+//            llBottomControl.setVisibility(View.VISIBLE);
             pbBottom.setVisibility(View.INVISIBLE);
             setTitleVisibility(View.VISIBLE);
             ivThumb.setVisibility(View.INVISIBLE);
@@ -270,7 +269,7 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
         } else if (CURRENT_STATE == CURRENT_STATE_PAUSE) {
             updateStartImage();
             ivStart.setVisibility(View.VISIBLE);
-            llBottomControl.setVisibility(View.VISIBLE);
+//            llBottomControl.setVisibility(View.VISIBLE);
             pbBottom.setVisibility(View.INVISIBLE);
             setTitleVisibility(View.VISIBLE);
             ivThumb.setVisibility(View.INVISIBLE);
@@ -841,7 +840,6 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
     public void onCompletion(MediaPlayer mediaPlayer) {
         Log.e("状态====","播放完毕");
     }
-
     public void stopPlay(){
         if (CURRENT_STATE == CURRENT_STATE_PLAYING) {
             CURRENT_STATE = CURRENT_STATE_PAUSE;

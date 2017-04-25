@@ -8,7 +8,6 @@ import com.duowei.tvshow.bean.KDSCall;
 
 public class CallEvent {
    public KDSCall call;
-
     public CallEvent(KDSCall call) {
         this.call = call;
     }

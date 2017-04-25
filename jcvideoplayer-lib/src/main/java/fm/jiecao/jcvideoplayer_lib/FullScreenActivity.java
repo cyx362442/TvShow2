@@ -19,7 +19,7 @@ import de.greenrobot.event.EventBus;
  */
 public class FullScreenActivity extends Activity {
 
-    static void toActivityFromNormal(Context context, int state, String url, String thumb, String title) {
+    public static void toActivityFromNormal(Context context, int state, String url, String thumb, String title) {
         STATE = state;
         URL = url;
         THUMB = thumb;
@@ -80,12 +80,10 @@ public class FullScreenActivity extends Activity {
             finish();
         }
     }
-
     @Override
     public void onBackPressed() {
         jcVideoPlayer.quitFullScreen();
     }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -95,17 +93,14 @@ public class FullScreenActivity extends Activity {
             finish();
         }
     }
-
     @Override
     protected void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
     }
-
     @Override
     protected void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
     }
-
 }

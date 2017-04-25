@@ -17,6 +17,7 @@ import com.duowei.tvshow.contact.FileDir;
 
 import java.io.File;
 
+import fm.jiecao.jcvideoplayer_lib.FullScreenActivity;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 
 /**
