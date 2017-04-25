@@ -36,6 +36,7 @@ import de.greenrobot.event.EventBus;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 
 public class ShowActivity extends AppCompatActivity {
+    public static final int RESULT=100;
     private ImageView mImageView;
     private int[] mId;
     private File mFile;
@@ -203,5 +204,12 @@ public class ShowActivity extends AppCompatActivity {
                 Log.e("呼叫===","开始……");
             }
         },5000);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResult(RESULT);
+        finish();
     }
 }

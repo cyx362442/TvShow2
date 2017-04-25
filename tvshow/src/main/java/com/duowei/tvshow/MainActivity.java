@@ -51,6 +51,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ServiceBroadCast mBroadCast;
     private int mLastTime=0;
     private ArrayList<String>listUrl=new ArrayList<>();
+
+    private final int REQUEST_CODE=0;
+    private IntentFilter mIntentFilter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +62,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initUI();
         mIntentService = new Intent(this, BroadService.class);
         startService(mIntentService);
+        //节目伦询
+        mIntentFilter = new IntentFilter(ConstsCode.ACTION_START_HEART);
+        mBroadCast = new ServiceBroadCast();
+        registerReceiver(mBroadCast, mIntentFilter);
         //开启时间段轮询
         startShow();
     }
@@ -78,18 +86,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==REQUEST_CODE){
+            if(mIntentService!=null){
+                stopService(mIntentService);
+            }
+            unregisterReceiver(mBroadCast);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         mLastTime=0;
-        //节目伦询
-        IntentFilter intentFilter = new IntentFilter(ConstsCode.ACTION_START_HEART);
-        mBroadCast = new ServiceBroadCast();
-        registerReceiver(mBroadCast,intentFilter);
     }
 
     @Override
@@ -123,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     intent.putExtra("image_name",bean.image_name);
                     intent.putExtra("ad",bean.ad);
                     intent.putExtra("color",bean.color);
-                    startActivity(intent);
+                    startActivityForResult(intent,REQUEST_CODE);
                 }
                 /**纯视频播放模式*/
                 else if(!bean.video_name.equals("null")&&bean.image_name.equals("null")){
@@ -133,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     intent.putStringArrayListExtra("selectPaths",listUrl);
                     intent.putExtra("ad",bean.ad);
                     intent.putExtra("color",bean.color);
-                    startActivity(intent);
+                    startActivityForResult(intent,REQUEST_CODE);
                 }
                 /**图片、视频混合模式*/
                 else if(!bean.video_name.equals("null")&&!bean.image_name.equals("null")){
@@ -143,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     intent.putExtra("video_palce",bean.video_palce);
                     intent.putExtra("ad",bean.ad);
                     intent.putExtra("color",bean.color);
-                    startActivity(intent);
+                    startActivityForResult(intent,REQUEST_CODE);
                 }
                 break;
             }
@@ -170,8 +180,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.view_start:
-//                mIntent = new Intent(this, ShowActivity.class);
-//                startActivity(mIntent);
+                startService(mIntentService);
+                registerReceiver(mBroadCast,mIntentFilter);
                 startShow();
                 break;
             case R.id.view_movie:
