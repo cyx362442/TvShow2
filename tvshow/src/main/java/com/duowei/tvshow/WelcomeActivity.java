@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import com.duowei.tvshow.bean.OneDataBean;
 import com.duowei.tvshow.bean.ZoneTime;
 import com.duowei.tvshow.contact.Consts;
 import com.duowei.tvshow.contact.FileDir;
+import com.duowei.tvshow.event.ConncetOk;
 import com.duowei.tvshow.event.ReConnect;
 import com.duowei.tvshow.helper.VersionUpdate;
 import com.duowei.tvshow.helper.VersionUpdateImpl;
@@ -87,6 +89,7 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
     };
     private LinearLayout mLl_loading;
     private String mDown_data;
+    private LinearLayout mLl_loading2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +98,7 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
         EventBus.getDefault().register(this);
         bnp = (NumberProgressBar) findViewById(R.id.number_bar);
         mLl_loading = (LinearLayout) findViewById(R.id.ll_loading);
+        mLl_loading2 = (LinearLayout) findViewById(R.id.ll_loading2);
         if(!Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){
             Toast.makeText(this,"当前内存卡不可用",Toast.LENGTH_LONG).show();
             return;
@@ -104,7 +108,8 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
     }
 
     //第一次连接失败，重新下载连接
-    public void onEventMainThread(ReConnect event){
+    public void onEventMainThread(ReConnect event) throws InterruptedException {
+        Thread.sleep(1000);
        Http_File(mDown_data);
     }
 
