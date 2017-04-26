@@ -8,13 +8,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import com.duowei.tvshow.adapter.CallListAdapter;
 import com.duowei.tvshow.bean.KDSCall;
 import com.duowei.tvshow.contact.Consts;
 import com.duowei.tvshow.contact.FileDir;
 import com.duowei.tvshow.dialog.CallDialog;
+import com.duowei.tvshow.event.BrushCall;
 import com.duowei.tvshow.event.CallEvent;
 import com.duowei.tvshow.event.FinishEvent;
 import com.duowei.tvshow.fragment.VideoFragment;
@@ -26,13 +31,14 @@ import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechSynthesizer;
 import com.squareup.picasso.Picasso;
-
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
-import de.greenrobot.event.EventBus;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 
 public class ShowActivity extends AppCompatActivity {
@@ -49,6 +55,11 @@ public class ShowActivity extends AppCompatActivity {
     private ArrayList<String>listUrl=new ArrayList<>();
     // 语音合成对象
     private SpeechSynthesizer mTts;
+    private ListView mLv;
+    private List<KDSCall>listCall=new ArrayList<>();
+    private CallListAdapter mCallListAdapter;
+    private LinearLayout mLlCall;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +67,8 @@ public class ShowActivity extends AppCompatActivity {
         EventBus.getDefault().register(this);
         mImageView = (ImageView) findViewById(R.id.image);
         mTsfv = (TextSurfaceView) findViewById(R.id.textView);
+        mLv = (ListView) findViewById(R.id.listview);
+        mLlCall = (LinearLayout) findViewById(R.id.ll_call);
         mId = new int[]{R.id.frame01,R.id.frame02,R.id.frame03,
                 R.id.frame04,R.id.frame05,R.id.frame06,
                 R.id.frame07,R.id.frame08,R.id.frame09,};
@@ -66,6 +79,13 @@ public class ShowActivity extends AppCompatActivity {
         // 初始化合成对象
         mTts = SpeechSynthesizer.createSynthesizer(ShowActivity.this, mTtsInitListener);
         mCallDialog = CallDialog.getInstance();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mCallListAdapter = new CallListAdapter(this, listCall);
+        mLv.setAdapter(mCallListAdapter);
     }
 
     private void startShow(Intent intent) {
@@ -118,7 +138,7 @@ public class ShowActivity extends AppCompatActivity {
     };
 
     @Subscribe
-    public void onEvent(final CallEvent event){
+    public void showCall(final CallEvent event){
         final KDSCall call = event.call;
         //停止轮询
         mHandler.removeCallbacks(mRun);
@@ -148,7 +168,7 @@ public class ShowActivity extends AppCompatActivity {
                     });
                     /**删除服务器上这条记录*/
                     String xh = call.getXh();
-                    String sql="delete from KDSCall where xh='"+xh+"'|";
+                    String sql="update KDSCall set YHJ='1' where xh='"+xh+"'|";
                     /**呼叫显示时长*/
                     try {
                         Thread.sleep(Consts.callTime*1000);
@@ -167,9 +187,22 @@ public class ShowActivity extends AppCompatActivity {
             }
         }).start();
     }
-    //时间段播放结束
-    public void onEventMainThread(FinishEvent event){
+    @Subscribe
+    public void FinishActivity(FinishEvent event){
         finish();
+    }
+    @Subscribe
+    public void BrushData(BrushCall event){
+        listCall.clear();
+        for(int i=0;i<event.arrayCall.length;i++){
+            listCall.add(event.arrayCall[i]);
+        }
+        if(listCall.size()<=0){
+            mLlCall.setVisibility(View.GONE);
+        }else{
+            mLlCall.setVisibility(View.VISIBLE);
+            mCallListAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -180,10 +213,10 @@ public class ShowActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         JCVideoPlayer.releaseAllVideos();
-        EventBus.getDefault().unregister(this);
         if(mHandler!=null){
             mHandler.removeCallbacks(mRun);
         }
+        EventBus.getDefault().unregister(this);
         super.onStop();
     }
     /**呼叫轮询*/
@@ -201,7 +234,6 @@ public class ShowActivity extends AppCompatActivity {
             public void run() {
                 mHandler.postDelayed(this,1000);
                 Post6.instance().getCall();
-                Log.e("呼叫===","开始……");
             }
         },5000);
     }

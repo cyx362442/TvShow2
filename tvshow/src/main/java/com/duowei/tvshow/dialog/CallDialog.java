@@ -1,19 +1,25 @@
 package com.duowei.tvshow.dialog;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.duowei.tvshow.R;
+import com.duowei.tvshow.bean.KDSCall;
 
 /**
  * Created by Administrator on 2017-04-18.
@@ -29,12 +35,14 @@ public class CallDialog {
         }
         return dialog;
     }
+    Context context;
     private  RelativeLayout mLayout;
     private AlertDialog mDialog;
     public synchronized void callShow(Context context,String msg){
         if(mDialog!=null){
             mDialog.dismiss();
         }
+        this.context=context;
         mDialog = new AlertDialog.Builder(context).create();
         //必须先setView，否则在dialog\popuwindow中无法自动弹出软健盘
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

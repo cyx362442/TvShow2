@@ -13,6 +13,15 @@ public class KDSCall {
 
     private String xh;
     private String tableno;
+    private String yhj;
+
+    public String getYhj() {
+        return yhj;
+    }
+
+    public void setYhj(String yhj) {
+        this.yhj = yhj;
+    }
 
     public String getXh() {
         return xh;

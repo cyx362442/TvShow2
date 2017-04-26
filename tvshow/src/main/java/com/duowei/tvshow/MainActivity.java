@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if(mIntentService!=null){
                 stopService(mIntentService);
             }
-            unregisterReceiver(mBroadCast);
+//            unregisterReceiver(mBroadCast);
         }
     }
 

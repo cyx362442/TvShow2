@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.duowei.tvshow.bean.KDSCall;
 import com.duowei.tvshow.contact.Consts;
 import com.duowei.tvshow.dialog.CallDialog;
+import com.duowei.tvshow.event.BrushCall;
 import com.duowei.tvshow.event.CallEvent;
 import com.duowei.tvshow.httputils.Post6;
 import com.duowei.tvshow.httputils.Post7;
@@ -16,11 +18,10 @@ import com.duowei.tvshow.view.RecyclerBanner;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechSynthesizer;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
-
-import de.greenrobot.event.EventBus;
 
 public class ImageFullActivity extends AppCompatActivity {
     // 语音合成对象
@@ -68,7 +69,7 @@ public class ImageFullActivity extends AppCompatActivity {
         },5000);
     }
     @Subscribe
-    public void onEvent(final CallEvent event){
+    public void showCall(final CallEvent event){
         final KDSCall call = event.call;
         //停止轮询
         mHandler.removeCallbacks(mRun);

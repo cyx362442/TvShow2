@@ -5,12 +5,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 
+import com.duowei.tvshow.adapter.CallListAdapter;
 import com.duowei.tvshow.bean.KDSCall;
 import com.duowei.tvshow.contact.Consts;
 import com.duowei.tvshow.dialog.CallDialog;
+import com.duowei.tvshow.event.BrushCall;
 import com.duowei.tvshow.event.CallEvent;
 import com.duowei.tvshow.event.FinishEvent;
 import com.duowei.tvshow.httputils.Post6;
@@ -19,11 +24,12 @@ import com.duowei.tvshow.view.TextSurfaceView;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechSynthesizer;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import de.greenrobot.event.EventBus;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 
 public class VideoFullActivity extends AppCompatActivity{
@@ -37,10 +43,17 @@ public class VideoFullActivity extends AppCompatActivity{
     private Runnable mRun;
     private Intent mIntent;
 
+    private ListView mLv;
+    private List<KDSCall> listCall=new ArrayList<>();
+    private CallListAdapter mCallListAdapter;
+    private LinearLayout mLlCall;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_full);
+        mLv = (ListView) findViewById(R.id.listview);
+        mLlCall = (LinearLayout) findViewById(R.id.ll_call);
         mIntent = getIntent();
         if(mIntent ==null){
             Toast.makeText(this,"找到不到视频",Toast.LENGTH_LONG).show();
@@ -76,7 +89,7 @@ public class VideoFullActivity extends AppCompatActivity{
     }
 
     @Subscribe
-    public void onEvent(final CallEvent event){
+    public void showCall(final CallEvent event){
         final KDSCall call = event.call;
         //停止轮询
         mHandler.removeCallbacks(mRun);
@@ -104,7 +117,7 @@ public class VideoFullActivity extends AppCompatActivity{
                     });
                     /**删除服务器上这条记录*/
                     String xh = call.getXh();
-                    String sql="delete from KDSCall where xh='"+xh+"'|";
+                    String sql="update KDSCall set YHJ='1' where xh='"+xh+"'|";
                     /**呼叫显示时长*/
                     try {
                         Thread.sleep(Consts.callTime*1000);
@@ -123,8 +136,22 @@ public class VideoFullActivity extends AppCompatActivity{
         }).start();
     }
 
-    public void onEventMainThread(FinishEvent event){
+    @Subscribe
+    public void FinishActivity(FinishEvent event){
         finish();
+    }
+    @Subscribe
+    public void BrushData(BrushCall event){
+        listCall.clear();
+        for(int i=0;i<event.arrayCall.length;i++){
+            listCall.add(event.arrayCall[i]);
+        }
+        if(listCall.size()<=0){
+            mLlCall.setVisibility(View.GONE);
+        }else{
+            mLlCall.setVisibility(View.VISIBLE);
+            mCallListAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -132,9 +159,6 @@ public class VideoFullActivity extends AppCompatActivity{
         super.onResume();
         mJcVideoPlayer = (JCVideoPlayer) findViewById(R.id.jcvideoplayer);
         mTsfv = (TextSurfaceView) findViewById(R.id.textsurfaceview);
-        //从第一部开始播放
-//        mJcVideoPlayer.setUp(videoPath.get(0), MyJVCPlayer.SCREEN_LAYOUT_NORMAL, "");
-//        mJcVideoPlayer.setUp(videoPath.get(0),videoPath.get(0),"视频",true);
         mJcVideoPlayer.setUp(videoPath.get(0),"","");
         /**滚动文字内容*/
         if(!TextUtils.isEmpty(mIntent.getStringExtra("ad"))){
