@@ -4,11 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -17,12 +14,10 @@ import com.duowei.tvshow.bean.OneDataBean;
 import com.duowei.tvshow.contact.ConstsCode;
 import com.duowei.tvshow.contact.FileDir;
 import com.duowei.tvshow.event.FinishEvent;
-import com.duowei.tvshow.fragment.VideoFragment;
 import com.duowei.tvshow.image_video.ImageDir;
 import com.duowei.tvshow.image_video.PhotoSelectorActivity;
 import com.duowei.tvshow.service.BroadService;
 import com.duowei.tvshow.utils.CurrentTime;
-import com.squareup.picasso.Picasso;
 
 import org.litepal.crud.DataSupport;
 
@@ -30,8 +25,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.greenrobot.event.EventBus;
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
+import org.greenrobot.eventbus.EventBus;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int REQUEST_CODE_GET_PHOTOS = 1000;
