@@ -69,6 +69,7 @@ public class ShowActivity extends AppCompatActivity {
         mTsfv = (TextSurfaceView) findViewById(R.id.textView);
         mLv = (ListView) findViewById(R.id.listview);
         mLlCall = (LinearLayout) findViewById(R.id.ll_call);
+        mLlCall.bringToFront();
         mId = new int[]{R.id.frame01,R.id.frame02,R.id.frame03,
                 R.id.frame04,R.id.frame05,R.id.frame06,
                 R.id.frame07,R.id.frame08,R.id.frame09,};
