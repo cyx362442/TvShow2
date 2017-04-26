@@ -54,14 +54,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initUI();
+        //马上播放
+//        startShow();
+        //开启广播节目伦询
         mIntentService = new Intent(this, BroadService.class);
         startService(mIntentService);
-        //节目伦询
         mIntentFilter = new IntentFilter(ConstsCode.ACTION_START_HEART);
         mBroadCast = new ServiceBroadCast();
         registerReceiver(mBroadCast, mIntentFilter);
-        //开启时间段轮询
-        startShow();
     }
 
     /**启用广播 */
@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return;
             }
             if(action.equals(ConstsCode.ACTION_START_HEART)){
+                Log.e("======","开始节目轮询……");
                 startShow();
             }
         }
