@@ -124,7 +124,7 @@ public class VideoFullActivity extends AppCompatActivity{
                     });
                     /**删除服务器上这条记录*/
                     String xh = call.getXh();
-                    String sql="update KDSCall set YHJ='1' where xh='"+xh+"'|";
+                    String sql="update KDSCall set YHJ='2' where xh='"+xh+"'|";
                     /**呼叫显示时长*/
                     try {
                         Thread.sleep(Consts.callTime*1000);
@@ -159,13 +159,6 @@ public class VideoFullActivity extends AppCompatActivity{
             mLv.setVisibility(View.VISIBLE);
             mCallListAdapter.notifyDataSetChanged();
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mCallListAdapter = new CallListAdapter(this, listCall);
-        mLv.setAdapter(mCallListAdapter);
     }
 
     @Override
