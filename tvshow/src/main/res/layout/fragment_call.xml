@@ -16,7 +16,7 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="10dp"
                         android:gravity="center"
-                        android:text="等待中"
+                        android:text="准备中"
                         android:textSize="30dp"
                         android:textColor="@color/white"/>
                     <ListView
@@ -35,7 +35,7 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="10dp"
                         android:gravity="center"
-                        android:text="呼叫中"
+                        android:text="请取餐"
                         android:textSize="30dp"
                         android:textColor="@color/call_yellow"/>
                     <ListView

@@ -46,8 +46,6 @@ public class VideoFullActivity extends AppCompatActivity{
     private Runnable mRun;
     private Intent mIntent;
 
-    private List<KDSCall> listCall=new ArrayList<>();
-    private CallListAdapter mCallListAdapter;
     private CallFragment mCallFragment;
 
     @Override
@@ -157,6 +155,7 @@ public class VideoFullActivity extends AppCompatActivity{
         mJcVideoPlayer = (JCVideoPlayer) findViewById(R.id.jcvideoplayer);
         mTsfv = (TextSurfaceView) findViewById(R.id.textsurfaceview);
         mJcVideoPlayer.setUp(videoPath.get(0),"","");
+//        mJcVideoPlayer.setUpForFullscreen(videoPath.get(0),"","");
         /**滚动文字内容*/
         if(!TextUtils.isEmpty(mIntent.getStringExtra("ad"))){
             mTsfv.setMove(true);

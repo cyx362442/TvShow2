@@ -36,7 +36,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 
@@ -54,8 +53,6 @@ public class ShowActivity extends AppCompatActivity {
     private ArrayList<String>listUrl=new ArrayList<>();
     // 语音合成对象
     private SpeechSynthesizer mTts;
-    private List<KDSCall>listCall=new ArrayList<>();
-    private CallListAdapter mCallListAdapter;
     private CallFragment mCallFragment;
 
     @Override

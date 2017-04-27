@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         initUI();
         //开启时间段轮询
-        startShow();
         mIntentService = new Intent(this, BroadService.class);
         startService(mIntentService);
         //节目伦询

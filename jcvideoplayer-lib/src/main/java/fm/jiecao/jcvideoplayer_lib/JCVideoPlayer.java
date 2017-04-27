@@ -22,7 +22,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.Timer;
 import java.util.TimerTask;
