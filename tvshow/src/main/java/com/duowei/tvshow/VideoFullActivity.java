@@ -1,5 +1,7 @@
 package com.duowei.tvshow;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +20,7 @@ import com.duowei.tvshow.dialog.CallDialog;
 import com.duowei.tvshow.event.BrushCall;
 import com.duowei.tvshow.event.CallEvent;
 import com.duowei.tvshow.event.FinishEvent;
+import com.duowei.tvshow.fragment.CallFragment;
 import com.duowei.tvshow.httputils.Post6;
 import com.duowei.tvshow.httputils.Post7;
 import com.duowei.tvshow.view.TextSurfaceView;
@@ -43,17 +46,20 @@ public class VideoFullActivity extends AppCompatActivity{
     private Runnable mRun;
     private Intent mIntent;
 
-    private ListView mLv;
     private List<KDSCall> listCall=new ArrayList<>();
     private CallListAdapter mCallListAdapter;
-//    private LinearLayout mLlCall;
+    private CallFragment mCallFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_full);
-        mLv = (ListView) findViewById(R.id.listview);
-//        mLlCall = (LinearLayout) findViewById(R.id.ll_call);
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        mCallFragment = new CallFragment();
+        ft.replace(R.id.frame_call, mCallFragment);
+        ft.commit();
+
         mIntent = getIntent();
         if(mIntent ==null){
             Toast.makeText(this,"找到不到视频",Toast.LENGTH_LONG).show();
@@ -67,13 +73,6 @@ public class VideoFullActivity extends AppCompatActivity{
         mTts = SpeechSynthesizer.createSynthesizer(VideoFullActivity.this, null);
         //初呼叫界面
         mCallDialog = CallDialog.getInstance();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mCallListAdapter = new CallListAdapter(this, listCall);
-        mLv.setAdapter(mCallListAdapter);
     }
 
     /**呼叫轮询*/
@@ -149,16 +148,7 @@ public class VideoFullActivity extends AppCompatActivity{
     }
     @Subscribe
     public void BrushData(BrushCall event){
-        listCall.clear();
-        for(int i=0;i<event.arrayCall.length;i++){
-            listCall.add(event.arrayCall[i]);
-        }
-        if(listCall.size()<=0){
-            mLv.setVisibility(View.GONE);
-        }else{
-            mLv.setVisibility(View.VISIBLE);
-            mCallListAdapter.notifyDataSetChanged();
-        }
+        mCallFragment.setListWait(event);
     }
 
     @Override

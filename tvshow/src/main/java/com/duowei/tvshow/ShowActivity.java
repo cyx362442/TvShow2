@@ -54,7 +54,6 @@ public class ShowActivity extends AppCompatActivity {
     private ArrayList<String>listUrl=new ArrayList<>();
     // 语音合成对象
     private SpeechSynthesizer mTts;
-    private ListView mLv;
     private List<KDSCall>listCall=new ArrayList<>();
     private CallListAdapter mCallListAdapter;
     private CallFragment mCallFragment;
@@ -66,7 +65,6 @@ public class ShowActivity extends AppCompatActivity {
         EventBus.getDefault().register(this);
         mImageView = (ImageView) findViewById(R.id.image);
         mTsfv = (TextSurfaceView) findViewById(R.id.textView);
-        mLv = (ListView) findViewById(R.id.listview);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -84,13 +82,6 @@ public class ShowActivity extends AppCompatActivity {
         // 初始化合成对象
         mTts = SpeechSynthesizer.createSynthesizer(ShowActivity.this, mTtsInitListener);
         mCallDialog = CallDialog.getInstance();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mCallListAdapter = new CallListAdapter(this, listCall);
-        mLv.setAdapter(mCallListAdapter);
     }
 
     private void startShow(Intent intent) {

@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return;
             }
             if(action.equals(ConstsCode.ACTION_START_HEART)){
-                Log.e("======","开始轮询……");
                 startShow();
             }
         }
