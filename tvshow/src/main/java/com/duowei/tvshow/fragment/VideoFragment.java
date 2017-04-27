@@ -1,12 +1,11 @@
 package com.duowei.tvshow.fragment;
 
 
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +16,12 @@ import com.duowei.tvshow.contact.FileDir;
 
 import java.io.File;
 
-import fm.jiecao.jcvideoplayer_lib.FullScreenActivity;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class VideoFragment extends Fragment{
+public class VideoFragment extends Fragment {
 
     private JCVideoPlayer mJcVideoPlayer;
     private String mVideoname;

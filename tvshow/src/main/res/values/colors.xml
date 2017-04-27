@@ -6,4 +6,5 @@
     <color name="white">#f0f0f0</color>
     <color name="call_yellow">#F09606</color>
     <color name="call_green">#7EB345</color>
+    <color name="black">#000000</color>
 </resources>

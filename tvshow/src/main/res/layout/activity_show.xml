@@ -4,103 +4,118 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context="com.duowei.tvshow.ShowActivity">
-
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitXY"
-        android:src="@mipmap/bg"/>
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
+            android:layout_height="match_parent"
+            android:layout_above="@+id/textView">
             <FrameLayout
-                android:id="@+id/frame01"
+                android:id="@+id/frame_call"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
             </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/frame02"
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1">
-            </FrameLayout>
+                android:layout_weight="3">
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    />
+                <LinearLayout
+                    android:id="@+id/linearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
 
-            <FrameLayout
-                android:id="@+id/frame03"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-            </FrameLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+
+                        <FrameLayout
+                            android:id="@+id/frame01"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:id="@+id/frame02"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:id="@+id/frame03"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+                        </FrameLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+
+                        <FrameLayout
+                            android:id="@+id/frame04"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:id="@+id/frame05"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:id="@+id/frame06"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+                        </FrameLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+
+                        <FrameLayout
+                            android:id="@+id/frame07"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:id="@+id/frame08"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:id="@+id/frame09"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+                        </FrameLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <FrameLayout
-                android:id="@+id/frame04"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/frame05"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/frame06"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-            </FrameLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <FrameLayout
-                android:id="@+id/frame07"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/frame08"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/frame09"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-            </FrameLayout>
-        </LinearLayout>
-    </LinearLayout>
     <com.duowei.tvshow.view.TextSurfaceView
         android:id="@+id/textView"
         android:layout_width="match_parent"
@@ -126,6 +141,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:background="@drawable/shape_call"
-            android:stackFromBottom="true">
+            android:stackFromBottom="true"
+            android:visibility="gone">
         </ListView>
 </RelativeLayout>

@@ -108,7 +108,7 @@ public class AsyncUtils extends AsyncTask<String, Integer, Integer> {
             case -1:
                 mProgressDialog.dismiss();
                 EventBus.getDefault().post(new ReConnect());
-                Toast.makeText(context,"下载连接失败",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context,"下载连接失败",Toast.LENGTH_SHORT).show();
                 break;
             case 1:
                 mProgressDialog.setMessage("下载成功，正在解压中……");

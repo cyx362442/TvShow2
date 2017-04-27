@@ -1,16 +1,14 @@
 package com.duowei.tvshow;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Handler;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -22,6 +20,7 @@ import com.duowei.tvshow.dialog.CallDialog;
 import com.duowei.tvshow.event.BrushCall;
 import com.duowei.tvshow.event.CallEvent;
 import com.duowei.tvshow.event.FinishEvent;
+import com.duowei.tvshow.fragment.CallFragment;
 import com.duowei.tvshow.fragment.VideoFragment;
 import com.duowei.tvshow.httputils.Post6;
 import com.duowei.tvshow.httputils.Post7;
@@ -58,7 +57,7 @@ public class ShowActivity extends AppCompatActivity {
     private ListView mLv;
     private List<KDSCall>listCall=new ArrayList<>();
     private CallListAdapter mCallListAdapter;
-//    private LinearLayout mLlCall;
+    private CallFragment mCallFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +67,13 @@ public class ShowActivity extends AppCompatActivity {
         mImageView = (ImageView) findViewById(R.id.image);
         mTsfv = (TextSurfaceView) findViewById(R.id.textView);
         mLv = (ListView) findViewById(R.id.listview);
-//        mLlCall = (LinearLayout) findViewById(R.id.ll_call);
+
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        mCallFragment = new CallFragment();
+        ft.replace(R.id.frame_call, mCallFragment);
+        ft.commit();
+
         mId = new int[]{R.id.frame01,R.id.frame02,R.id.frame03,
                 R.id.frame04,R.id.frame05,R.id.frame06,
                 R.id.frame07,R.id.frame08,R.id.frame09,};
@@ -100,8 +105,8 @@ public class ShowActivity extends AppCompatActivity {
             Bundle bundle = new Bundle();
             bundle.putString("videoname",intent.getStringExtra("video_name"));
             mFragment.setArguments(bundle);
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            FragmentManager fm = getFragmentManager();
+            FragmentTransaction transaction = fm.beginTransaction();
             transaction.replace(mId[place-1],mFragment);
             transaction.commit();
         }
@@ -166,7 +171,7 @@ public class ShowActivity extends AppCompatActivity {
                             int code = mTts.startSpeaking("请"+call.getTableno()+"号到前台取餐", null);
                         }
                     });
-                    /**删除服务器上这条记录*/
+                    /**更新服务器上这条记录*/
                     String xh = call.getXh();
                     String sql="update KDSCall set YHJ='2' where xh='"+xh+"'|";
                     /**呼叫显示时长*/
@@ -193,16 +198,7 @@ public class ShowActivity extends AppCompatActivity {
     }
     @Subscribe
     public void BrushData(BrushCall event){
-        listCall.clear();
-        for(int i=0;i<event.arrayCall.length;i++){
-            listCall.add(event.arrayCall[i]);
-        }
-        if(listCall.size()<=0){
-            mLv.setVisibility(View.GONE);
-        }else{
-            mLv.setVisibility(View.VISIBLE);
-            mCallListAdapter.notifyDataSetChanged();
-        }
+        mCallFragment.setListWait(event);
     }
 
     @Override
