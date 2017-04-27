@@ -16,12 +16,11 @@ public class BroadService extends Service {
     /**
      * 心跳间隔一分钟(节目轮询)
      */
-    private static final long HEARTBEAT_INTERVAL = 60 * 1000L;
+    public static  long HEARTBEAT_INTERVAL = 60 * 1000L;
 
     private AlarmManager mAlarmManager;
 
     private PendingIntent mPendingIntent;
-//    private PendingIntent mPendingIntentCALL;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -34,15 +33,12 @@ public class BroadService extends Service {
 
         mPendingIntent = PendingIntent.getBroadcast(this, 10000, new Intent(
                 ConstsCode.ACTION_START_HEART), PendingIntent.FLAG_UPDATE_CURRENT);
-
-//        mPendingIntentCALL = PendingIntent.getBroadcast(this, 5000, new Intent(
-//                ConstsCode.ACTION_START_CALL), PendingIntent.FLAG_UPDATE_CURRENT);
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // 发送启动推送任务的广播
-//        Intent startIntent = new Intent(Const.ACTION_START_HEART);
-//        sendBroadcast(startIntent);
+        Intent startIntent = new Intent(ConstsCode.ACTION_START_HEART);
+        sendBroadcast(startIntent);
         // 启动心跳定时器
         long triggerAtTime = SystemClock.elapsedRealtime() + HEARTBEAT_INTERVAL;
         mAlarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,

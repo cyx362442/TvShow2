@@ -162,6 +162,13 @@ public class VideoFullActivity extends AppCompatActivity{
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        mCallListAdapter = new CallListAdapter(this, listCall);
+        mLv.setAdapter(mCallListAdapter);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         mJcVideoPlayer = (JCVideoPlayer) findViewById(R.id.jcvideoplayer);
@@ -191,10 +198,5 @@ public class VideoFullActivity extends AppCompatActivity{
         if(mHandler!=null){
             mHandler.removeCallbacks(mRun);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }
