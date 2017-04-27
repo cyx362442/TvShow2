@@ -46,14 +46,14 @@ public class VideoFullActivity extends AppCompatActivity{
     private ListView mLv;
     private List<KDSCall> listCall=new ArrayList<>();
     private CallListAdapter mCallListAdapter;
-    private LinearLayout mLlCall;
+//    private LinearLayout mLlCall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_full);
         mLv = (ListView) findViewById(R.id.listview);
-        mLlCall = (LinearLayout) findViewById(R.id.ll_call);
+//        mLlCall = (LinearLayout) findViewById(R.id.ll_call);
         mIntent = getIntent();
         if(mIntent ==null){
             Toast.makeText(this,"找到不到视频",Toast.LENGTH_LONG).show();
@@ -67,6 +67,13 @@ public class VideoFullActivity extends AppCompatActivity{
         mTts = SpeechSynthesizer.createSynthesizer(VideoFullActivity.this, null);
         //初呼叫界面
         mCallDialog = CallDialog.getInstance();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mCallListAdapter = new CallListAdapter(this, listCall);
+        mLv.setAdapter(mCallListAdapter);
     }
 
     /**呼叫轮询*/
@@ -147,9 +154,9 @@ public class VideoFullActivity extends AppCompatActivity{
             listCall.add(event.arrayCall[i]);
         }
         if(listCall.size()<=0){
-            mLlCall.setVisibility(View.GONE);
+            mLv.setVisibility(View.GONE);
         }else{
-            mLlCall.setVisibility(View.VISIBLE);
+            mLv.setVisibility(View.VISIBLE);
             mCallListAdapter.notifyDataSetChanged();
         }
     }

@@ -43,7 +43,7 @@ public class Post6 {
                 Gson gson = new Gson();
                 KDSCall[] calls = gson.fromJson(response, KDSCall[].class);
                 for(int i=0;i<calls.length;i++){
-                    if(!calls[i].getYhj().equals("1")){
+                    if(calls[i].getYhj().equals("1")){
                         EventBus.getDefault().post(new CallEvent(calls[i]));
                         break;
                     }

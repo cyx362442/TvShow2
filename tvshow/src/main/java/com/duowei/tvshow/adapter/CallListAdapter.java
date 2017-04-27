@@ -45,11 +45,12 @@ public class CallListAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         View inflate = LayoutInflater.from(context).inflate(R.layout.list_item, null);
         TextView text = (TextView) inflate.findViewById(R.id.tv_show);
-        text.setText(listCall.get(i).getTableno()+"号");
-        if(listCall.get(i).getYhj().equals("1")){
-            text.setTextColor(Color.WHITE);
+        if(listCall.get(i).getYhj().equals("2")){
+            text.setText(listCall.get(i).getTableno()+"呼叫中");
+            text.setTextColor(context.getResources().getColor(R.color.call_green));
         }else{
-            text.setTextColor(context.getResources().getColor(R.color.call_yellow));
+            text.setText(listCall.get(i).getTableno()+"等待中");
+            text.setTextColor(context.getResources().getColor(R.color.white));
         }
         return inflate;
     }

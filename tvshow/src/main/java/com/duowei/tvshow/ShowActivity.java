@@ -58,7 +58,7 @@ public class ShowActivity extends AppCompatActivity {
     private ListView mLv;
     private List<KDSCall>listCall=new ArrayList<>();
     private CallListAdapter mCallListAdapter;
-    private LinearLayout mLlCall;
+//    private LinearLayout mLlCall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +68,7 @@ public class ShowActivity extends AppCompatActivity {
         mImageView = (ImageView) findViewById(R.id.image);
         mTsfv = (TextSurfaceView) findViewById(R.id.textView);
         mLv = (ListView) findViewById(R.id.listview);
-        mLlCall = (LinearLayout) findViewById(R.id.ll_call);
+//        mLlCall = (LinearLayout) findViewById(R.id.ll_call);
         mId = new int[]{R.id.frame01,R.id.frame02,R.id.frame03,
                 R.id.frame04,R.id.frame05,R.id.frame06,
                 R.id.frame07,R.id.frame08,R.id.frame09,};
@@ -168,7 +168,7 @@ public class ShowActivity extends AppCompatActivity {
                     });
                     /**删除服务器上这条记录*/
                     String xh = call.getXh();
-                    String sql="update KDSCall set YHJ='1' where xh='"+xh+"'|";
+                    String sql="update KDSCall set YHJ='2' where xh='"+xh+"'|";
                     /**呼叫显示时长*/
                     try {
                         Thread.sleep(Consts.callTime*1000);
@@ -198,9 +198,9 @@ public class ShowActivity extends AppCompatActivity {
             listCall.add(event.arrayCall[i]);
         }
         if(listCall.size()<=0){
-            mLlCall.setVisibility(View.GONE);
+            mLv.setVisibility(View.GONE);
         }else{
-            mLlCall.setVisibility(View.VISIBLE);
+            mLv.setVisibility(View.VISIBLE);
             mCallListAdapter.notifyDataSetChanged();
         }
     }
