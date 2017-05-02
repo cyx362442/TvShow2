@@ -14,11 +14,13 @@ import com.duowei.tvshow.bean.OneDataBean;
 import com.duowei.tvshow.contact.ConstsCode;
 import com.duowei.tvshow.contact.FileDir;
 import com.duowei.tvshow.event.FinishEvent;
+import com.duowei.tvshow.event.FinishMain;
 import com.duowei.tvshow.image_video.ImageDir;
 import com.duowei.tvshow.image_video.PhotoSelectorActivity;
 import com.duowei.tvshow.service.BroadService;
 import com.duowei.tvshow.utils.CurrentTime;
 
+import org.greenrobot.eventbus.Subscribe;
 import org.litepal.crud.DataSupport;
 
 import java.io.File;
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        EventBus.getDefault().register(this);
         initUI();
         //开启时间段轮询
         mIntentService = new Intent(this, BroadService.class);
@@ -89,6 +92,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Subscribe
+    public void FinishActivity(FinishMain event){
+        finish();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -102,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             stopService(mIntentService);
         }
         unregisterReceiver(mBroadCast);
+        EventBus.getDefault().unregister(this);
     }
 
     private void initUI() {
@@ -119,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String time = bean.time.trim();
             boolean newTime = isNewTime(time);
             if(newTime==true){//发现新的时间段
+                Log.e("=======","发现新的时间段……");
                 EventBus.getDefault().post(new FinishEvent());
                 /**纯图片播放模式*/
                 if(!bean.image_name.equals("null")&&bean.video_name.equals("null")){

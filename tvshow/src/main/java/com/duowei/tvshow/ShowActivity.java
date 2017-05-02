@@ -2,17 +2,20 @@ package com.duowei.tvshow;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.duowei.tvshow.adapter.CallListAdapter;
 import com.duowei.tvshow.bean.KDSCall;
 import com.duowei.tvshow.contact.Consts;
 import com.duowei.tvshow.contact.FileDir;
@@ -20,10 +23,12 @@ import com.duowei.tvshow.dialog.CallDialog;
 import com.duowei.tvshow.event.BrushCall;
 import com.duowei.tvshow.event.CallEvent;
 import com.duowei.tvshow.event.FinishEvent;
+import com.duowei.tvshow.event.FinishMain;
 import com.duowei.tvshow.fragment.CallFragment;
 import com.duowei.tvshow.fragment.VideoFragment;
 import com.duowei.tvshow.httputils.Post6;
 import com.duowei.tvshow.httputils.Post7;
+import com.duowei.tvshow.service.BroadService;
 import com.duowei.tvshow.view.TextSurfaceView;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
@@ -54,6 +59,7 @@ public class ShowActivity extends AppCompatActivity {
     // 语音合成对象
     private SpeechSynthesizer mTts;
     private CallFragment mCallFragment;
+    private BroadcastReceiver mHomeReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +69,7 @@ public class ShowActivity extends AppCompatActivity {
         mImageView = (ImageView) findViewById(R.id.image);
         mTsfv = (TextSurfaceView) findViewById(R.id.textView);
 
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        mCallFragment = new CallFragment();
-        ft.replace(R.id.frame_call, mCallFragment);
-        ft.commit();
+        initCallView();
 
         mId = new int[]{R.id.frame01,R.id.frame02,R.id.frame03,
                 R.id.frame04,R.id.frame05,R.id.frame06,
@@ -79,6 +81,17 @@ public class ShowActivity extends AppCompatActivity {
         // 初始化合成对象
         mTts = SpeechSynthesizer.createSynthesizer(ShowActivity.this, mTtsInitListener);
         mCallDialog = CallDialog.getInstance();
+        mHomeReceiver = new HomeReceiver();
+        IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        registerReceiver(mHomeReceiver,filter);
+    }
+
+    private void initCallView() {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        mCallFragment = new CallFragment();
+        ft.replace(R.id.frame_call, mCallFragment);
+        ft.commit();
     }
 
     private void startShow(Intent intent) {
@@ -203,6 +216,13 @@ public class ShowActivity extends AppCompatActivity {
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mHomeReceiver);
+    }
+
     /**呼叫轮询*/
     private void startCall() {
         //呼叫显示时间
@@ -220,6 +240,16 @@ public class ShowActivity extends AppCompatActivity {
                 Post6.instance().getCall();
             }
         },5000);
+    }
+
+    class HomeReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)){
+                EventBus.getDefault().post(new FinishMain());
+                finish();
+            }
+        }
     }
 
     @Override

@@ -2,11 +2,15 @@ package com.duowei.tvshow;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -20,6 +24,7 @@ import com.duowei.tvshow.dialog.CallDialog;
 import com.duowei.tvshow.event.BrushCall;
 import com.duowei.tvshow.event.CallEvent;
 import com.duowei.tvshow.event.FinishEvent;
+import com.duowei.tvshow.event.FinishMain;
 import com.duowei.tvshow.fragment.CallFragment;
 import com.duowei.tvshow.httputils.Post6;
 import com.duowei.tvshow.httputils.Post7;
@@ -47,6 +52,7 @@ public class VideoFullActivity extends AppCompatActivity{
     private Intent mIntent;
 
     private CallFragment mCallFragment;
+    private BroadcastReceiver mHomeReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +77,10 @@ public class VideoFullActivity extends AppCompatActivity{
         mTts = SpeechSynthesizer.createSynthesizer(VideoFullActivity.this, null);
         //初呼叫界面
         mCallDialog = CallDialog.getInstance();
+
+        mHomeReceiver = new HomeReceiver();
+        IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        registerReceiver(mHomeReceiver,filter);
     }
 
     /**呼叫轮询*/
@@ -179,6 +189,22 @@ public class VideoFullActivity extends AppCompatActivity{
         EventBus.getDefault().unregister(this);
         if(mHandler!=null){
             mHandler.removeCallbacks(mRun);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mHomeReceiver);
+    }
+
+    class HomeReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)){
+                EventBus.getDefault().post(new FinishMain());
+                finish();
+            }
         }
     }
 }

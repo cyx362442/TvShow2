@@ -39,7 +39,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 public class WelcomeActivity extends AppCompatActivity implements VersionUpdateImpl {
 
@@ -108,7 +109,8 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
     }
 
     //第一次连接失败，重新下载连接
-    public void onEventMainThread(ReConnect event) throws InterruptedException {
+    @Subscribe
+    public void reConnect(ReConnect event) throws InterruptedException {
         Thread.sleep(1000);
        Http_File(mDown_data);
     }
@@ -209,12 +211,9 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
 //                    DataSupport.deleteAll(OneDataBean.class);
 //                    DataSupport.saveAll(mOneDataBeanList);
                     /**下载图片、视频*/
-//                    Http_File("http://7xpj8w.com1.z0.glb.clouddn.com/video15.zip");
-//                    startDownLoad("http://7xpj8w.com1.z0.glb.clouddn.com/video15.zip");
                     Http_File(mDown_data);
 //                    startDownLoad(down_data);
 //                    VersionUpdate.checkVersion(WelcomeActivity.this,mDown_data);
-//                    VersionUpdate.checkVersion(WelcomeActivity.this,"http://7xpj8w.com1.z0.glb.clouddn.com/video15.zip");
                 }
             }
         });

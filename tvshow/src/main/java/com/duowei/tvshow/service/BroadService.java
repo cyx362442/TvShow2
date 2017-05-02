@@ -16,7 +16,7 @@ public class BroadService extends Service {
     /**
      * 心跳间隔一分钟(节目轮询)
      */
-    public static  long HEARTBEAT_INTERVAL = 60 * 1000L;
+    public static  long HEARTBEAT_INTERVAL = 5 * 1000L;
 
     private AlarmManager mAlarmManager;
 
