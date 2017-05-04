@@ -9,7 +9,6 @@ import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -20,7 +19,6 @@ import com.duowei.tvshow.bean.OneDataBean;
 import com.duowei.tvshow.bean.ZoneTime;
 import com.duowei.tvshow.contact.Consts;
 import com.duowei.tvshow.contact.FileDir;
-import com.duowei.tvshow.event.ConncetOk;
 import com.duowei.tvshow.event.ReConnect;
 import com.duowei.tvshow.helper.VersionUpdate;
 import com.duowei.tvshow.helper.VersionUpdateImpl;
@@ -211,9 +209,9 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
 //                    DataSupport.deleteAll(OneDataBean.class);
 //                    DataSupport.saveAll(mOneDataBeanList);
                     /**下载图片、视频*/
-                    Http_File(mDown_data);
+//                    Http_File(mDown_data);
 //                    startDownLoad(down_data);
-//                    VersionUpdate.checkVersion(WelcomeActivity.this,mDown_data);
+                    VersionUpdate.checkVersion(WelcomeActivity.this,mDown_data);
                 }
             }
         });

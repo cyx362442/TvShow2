@@ -6,14 +6,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.duowei.tvshow.bean.KDSCall;
@@ -65,6 +71,9 @@ public class ShowActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show);
+
+        setViewWeight();
+
         EventBus.getDefault().register(this);
         mImageView = (ImageView) findViewById(R.id.image);
         mTsfv = (TextSurfaceView) findViewById(R.id.textView);
@@ -84,6 +93,19 @@ public class ShowActivity extends AppCompatActivity {
         mHomeReceiver = new HomeReceiver();
         IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         registerReceiver(mHomeReceiver,filter);
+    }
+    /**设置屏占比*/
+    private void setViewWeight() {
+        SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
+        String viewWeight = preferences.getString("view_weight", "1:2");
+        View callView = findViewById(R.id.frame_call);
+        View image = findViewById(R.id.relative);
+        LinearLayout.LayoutParams paramsWeight = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams paramsWeight2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        paramsWeight.weight = Integer.parseInt(viewWeight.substring(0,1));
+        paramsWeight2.weight=Integer.parseInt(viewWeight.substring(2,3));
+        callView.setLayoutParams(paramsWeight2);
+        image.setLayoutParams(paramsWeight);
     }
 
     private void initCallView() {

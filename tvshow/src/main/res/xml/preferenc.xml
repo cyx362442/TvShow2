@@ -42,6 +42,27 @@
             android:summary="192.168.1.78"
             android:inputType="textUri"
             android:title="前台收银机IP" />
+        <ListPreference
+            android:key="list_key5"
+            android:title="呼叫/图片、视频屏占比"
+            android:summary="list_summary"
+            android:entries="@array/list_view_weight"
+            android:entryValues="@array/list_view_weight"
+            android:dialogTitle="呼叫/图片、视频屏占比" />
+        <ListPreference
+            android:key="list_key3"
+            android:title="等待中字体大小"
+            android:summary="list_summary"
+            android:entries="@array/list_textsize_entries"
+            android:entryValues="@array/list_textsize_entries"
+            android:dialogTitle="等待中字体大小" />
+        <ListPreference
+            android:key="list_key4"
+            android:title="呼叫中字体大小"
+            android:summary="list_summary"
+            android:entries="@array/list_textsize_entries"
+            android:entryValues="@array/list_textsize_entries"
+            android:dialogTitle="呼叫中字体大小" />
     </PreferenceCategory>
     <PreferenceScreen
         android:key="dect_settings"

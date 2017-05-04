@@ -7,4 +7,6 @@
     <color name="call_yellow">#F09606</color>
     <color name="call_green">#7EB345</color>
     <color name="black">#000000</color>
+    <color name="call_yellow2">#E9B96F</color>
+    <color name="call_red">#EC5413</color>
 </resources>

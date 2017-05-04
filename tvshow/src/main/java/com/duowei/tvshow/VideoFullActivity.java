@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -58,6 +59,8 @@ public class VideoFullActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_full);
+        setViewWeight();
+
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         mCallFragment = new CallFragment();
@@ -81,6 +84,20 @@ public class VideoFullActivity extends AppCompatActivity{
         mHomeReceiver = new HomeReceiver();
         IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         registerReceiver(mHomeReceiver,filter);
+    }
+
+    /**设置屏占比*/
+    private void setViewWeight() {
+        SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
+        String viewWeight = preferences.getString("view_weight", "1:2");
+        View callView = findViewById(R.id.frame_call);
+        View image = findViewById(R.id.jcvideoplayer);
+        LinearLayout.LayoutParams paramsWeight = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams paramsWeight2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        paramsWeight.weight = Integer.parseInt(viewWeight.substring(0,1));
+        paramsWeight2.weight=Integer.parseInt(viewWeight.substring(2,3));
+        callView.setLayoutParams(paramsWeight2);
+        image.setLayoutParams(paramsWeight);
     }
 
     /**呼叫轮询*/

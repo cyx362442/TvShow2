@@ -26,6 +26,9 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
     private Intent mIntent;
     private ListPreference mListKey2;
     private EditTextPreference mEtPreference4;
+    private Preference mListKey3;
+    private Preference mListKey4;
+    private ListPreference mListKey5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,9 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
         mListPreference = (ListPreference)findPreference(Consts.LIST_KEY);
         mCheckPreference = (CheckBoxPreference)findPreference(Consts.CHECKOUT_KEY);
         mListKey2 = (ListPreference) findPreference("list_key2");//呼叫显示时长
+        mListKey3 = findPreference("list_key3");//等待中字体
+        mListKey4 = findPreference("list_key4");//呼叫中字体
+        mListKey5 = (ListPreference) findPreference("list_key5");//屏占比
         mEtPreference4 = (EditTextPreference) findPreference("edittext_key4");//前台IP
 
         findPreference("dect_settings").setOnPreferenceClickListener(this);
@@ -61,6 +67,10 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
         mEtPreference3.setSummary(sharedPreferences.getString("edittext_key3", ""));
         mCheckPreference.setChecked(sharedPreferences.getBoolean("checkbox_key",true));
         mListKey2.setSummary(sharedPreferences.getString("list_key2","关闭"));
+        mListKey3.setSummary(sharedPreferences.getString("list_key3","20"));
+        mListKey4.setSummary(sharedPreferences.getString("list_key4","30"));
+        mListKey5.setSummary(sharedPreferences.getString("list_key5","1:2"));
+
         mEtPreference4.setSummary(sharedPreferences.getString("edittext_key4",""));
         // Set up a listener whenever a key changes
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
@@ -97,6 +107,15 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
         }else if(key.equals("list_key2")){//呼叫取菜
             mListKey2.setSummary(sharedPreferences.getString(key,""));
             mEdit.putString("callvalue",sharedPreferences.getString(key,"关闭"));
+        }else if(key.equals("list_key3")){//等待中字体大小
+            mListKey3.setSummary(sharedPreferences.getString(key,""));
+            mEdit.putString("waittext",sharedPreferences.getString(key,"20"));
+        }else if(key.equals("list_key4")){//呼叫中字体
+            mListKey4.setSummary(sharedPreferences.getString(key,""));
+            mEdit.putString("calltext",sharedPreferences.getString(key,"20"));
+        }else if(key.equals("list_key5")){//屏占比
+            mListKey5.setSummary(sharedPreferences.getString(key,""));
+            mEdit.putString("view_weight",sharedPreferences.getString(key,"1:2"));
         }else if(key.equals("edittext_key4")){//前台IP
             mEtPreference4.setSummary(sharedPreferences.getString(key,""));
             mEdit.putString("ip",sharedPreferences.getString(key,""));
