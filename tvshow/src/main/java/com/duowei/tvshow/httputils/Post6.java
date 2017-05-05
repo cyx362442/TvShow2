@@ -27,8 +27,7 @@ public class Post6 {
         }
         return post;
     }
-//    String sql="select xh,tableno,isnull(yhj,'0')yhj from KDSCall WHERE DATEADD(mi,-10,GETDATE()) < XDSJ|";
-    String sql="select xh,tableno,isnull(yhj,'0')yhj from KDSCall |";
+    String sql="select xh,tableno,isnull(yhj,'0')yhj from KDSCall order by xh desc|";
     List<KDSCall>listCall;
     public synchronized void getCall(){
         listCall=new ArrayList<>();
