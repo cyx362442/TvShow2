@@ -1,7 +1,6 @@
 package com.duowei.tvshow.httputils;
 
 
-import android.util.Log;
 
 import com.android.volley.VolleyError;
 import com.duowei.tvshow.bean.KDSCall;
@@ -27,7 +26,7 @@ public class Post6 {
         }
         return post;
     }
-    String sql="select xh,tableno,isnull(yhj,'0')yhj from KDSCall order by xh desc|";
+    String sql="select xh,tableno,isnull(yhj,'0')yhj from KDSCall order by xdsj desc|";
     List<KDSCall>listCall;
     public synchronized void getCall(){
         listCall=new ArrayList<>();

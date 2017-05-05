@@ -209,9 +209,9 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
 //                    DataSupport.deleteAll(OneDataBean.class);
 //                    DataSupport.saveAll(mOneDataBeanList);
                     /**下载图片、视频*/
-                    Http_File(mDown_data);
+//                    Http_File(mDown_data);
 //                    startDownLoad(down_data);
-//                    VersionUpdate.checkVersion(WelcomeActivity.this,mDown_data);
+                    VersionUpdate.checkVersion(WelcomeActivity.this,mDown_data);
                 }
             }
         });
