@@ -17,7 +17,7 @@
                         android:paddingTop="10dp"
                         android:gravity="center"
                         android:text="准备中/COMING"
-                        android:textSize="30dp"
+                        android:textSize="35dp"
                         android:background="#E9B96F"
                         android:textColor="@color/white"/>
                     <ListView
@@ -37,7 +37,7 @@
                         android:paddingTop="10dp"
                         android:gravity="center"
                         android:text="请取餐/SERVED"
-                        android:textSize="30dp"
+                        android:textSize="35dp"
                         android:background="#EC5413"
                         android:textColor="@color/white"
                         />
