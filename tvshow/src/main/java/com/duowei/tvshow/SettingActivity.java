@@ -29,6 +29,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
     private Preference mListKey3;
     private Preference mListKey4;
     private ListPreference mListKey5;
+    private ListPreference mListKey6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
         mListKey3 = findPreference("list_key3");//等待中字体
         mListKey4 = findPreference("list_key4");//呼叫中字体
         mListKey5 = (ListPreference) findPreference("list_key5");//屏占比
+        mListKey6 = (ListPreference) findPreference("list_key6");
         mEtPreference4 = (EditTextPreference) findPreference("edittext_key4");//前台IP
 
         findPreference("dect_settings").setOnPreferenceClickListener(this);
@@ -70,6 +72,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
         mListKey3.setSummary(sharedPreferences.getString("list_key3","20"));
         mListKey4.setSummary(sharedPreferences.getString("list_key4","30"));
         mListKey5.setSummary(sharedPreferences.getString("list_key5","1:2"));
+        mListKey6.setSummary(sharedPreferences.getString("list_key6","在线合成"));
 
         mEtPreference4.setSummary(sharedPreferences.getString("edittext_key4",""));
         // Set up a listener whenever a key changes
@@ -116,7 +119,11 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
         }else if(key.equals("list_key5")){//屏占比
             mListKey5.setSummary(sharedPreferences.getString(key,""));
             mEdit.putString("view_weight",sharedPreferences.getString(key,"1:2"));
-        }else if(key.equals("edittext_key4")){//前台IP
+        }else if(key.equals("list_key6")){
+            mListKey6.setSummary(sharedPreferences.getString(key,""));
+            mEdit.putString("soundstytle",sharedPreferences.getString(key,"在线合成"));
+        }
+        else if(key.equals("edittext_key4")){//前台IP
             mEtPreference4.setSummary(sharedPreferences.getString(key,""));
             mEdit.putString("ip",sharedPreferences.getString(key,""));
         }

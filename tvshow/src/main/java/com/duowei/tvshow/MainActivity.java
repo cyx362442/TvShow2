@@ -18,6 +18,7 @@ import com.duowei.tvshow.event.FinishMain;
 import com.duowei.tvshow.image_video.ImageDir;
 import com.duowei.tvshow.image_video.PhotoSelectorActivity;
 import com.duowei.tvshow.service.BroadService;
+import com.duowei.tvshow.tts.TTSOffline;
 import com.duowei.tvshow.utils.CurrentTime;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -64,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mIntentFilter = new IntentFilter(ConstsCode.ACTION_START_HEART);
         mBroadCast = new ServiceBroadCast();
         registerReceiver(mBroadCast, mIntentFilter);
+        //创建本地合成语音文件
+        TTSOffline.instance().copyBigDataBase(this);
     }
 
     /**启用广播 */

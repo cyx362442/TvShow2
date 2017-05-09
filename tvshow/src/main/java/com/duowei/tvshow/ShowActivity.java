@@ -36,6 +36,7 @@ import com.duowei.tvshow.fragment.VideoFragment;
 import com.duowei.tvshow.httputils.Post6;
 import com.duowei.tvshow.httputils.Post7;
 import com.duowei.tvshow.service.BroadService;
+import com.duowei.tvshow.tts.TTSOffline;
 import com.duowei.tvshow.view.TextSurfaceView;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
@@ -67,6 +68,8 @@ public class ShowActivity extends AppCompatActivity {
     private SpeechSynthesizer mTts;
     private CallFragment mCallFragment;
     private BroadcastReceiver mHomeReceiver;
+    private TTSOffline mOffline;
+    private String mSoundStytle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,8 @@ public class ShowActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN ,WindowManager.LayoutParams. FLAG_FULLSCREEN);
         setContentView(R.layout.activity_show);
         setViewWeight();
+        SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
+        mSoundStytle = preferences.getString("soundstytle", "在线合成");
 
         EventBus.getDefault().register(this);
         mImageView = (ImageView) findViewById(R.id.image);
@@ -88,8 +93,15 @@ public class ShowActivity extends AppCompatActivity {
         startShow(intent);
         //开启呼叫轮询
         startCall();
-        // 初始化合成对象
-        mTts = SpeechSynthesizer.createSynthesizer(ShowActivity.this, mTtsInitListener);
+        // 初始化在线语音合成对象
+        if(mSoundStytle.equals("在线合成")){
+            mTts = SpeechSynthesizer.createSynthesizer(ShowActivity.this, mTtsInitListener);
+        }else if(mSoundStytle.equals("离线合成")){
+            // 初始化离线语音合成对象
+            mOffline = TTSOffline.instance();
+            mOffline.initTts(this);
+        }
+
         mCallDialog = CallDialog.getInstance();
         mHomeReceiver = new HomeReceiver();
         IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
@@ -185,14 +197,17 @@ public class ShowActivity extends AppCompatActivity {
                         public void run() {
                             //显示
                             mCallDialog.callShow(ShowActivity.this, call.getTableno());
-                            //播音
-                            //设置合成语速
-                            mTts.setParameter(SpeechConstant.SPEED, "30");
-                            //设置合成音调
-                            mTts.setParameter(SpeechConstant.PITCH, "50");
-                            //设置合成音量
-                            mTts.setParameter(SpeechConstant.VOLUME, "100");
-                            int code = mTts.startSpeaking("请"+call.getTableno()+"号到前台取餐", null);
+                            if(mSoundStytle.equals("在线合成")){
+                                //设置合成语速
+                                mTts.setParameter(SpeechConstant.SPEED, "30");
+                                //设置合成音调
+                                mTts.setParameter(SpeechConstant.PITCH, "50");
+                                //设置合成音量
+                                mTts.setParameter(SpeechConstant.VOLUME, "100");
+                                mTts.startSpeaking("请"+call.getTableno()+"号到前台取餐", null);
+                            }else if(mSoundStytle.equals("离线合成")){
+                                mOffline.TTSPlay("请"+call.getTableno()+"号到前台取餐");
+                            }
                         }
                     });
                     /**更新服务器上这条记录*/
@@ -244,6 +259,9 @@ public class ShowActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mHomeReceiver);
+        if(mOffline!=null){
+            mOffline.setRelease();
+        }
     }
 
     /**呼叫轮询*/
