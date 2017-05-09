@@ -13,7 +13,6 @@ package com.duowei.tvshow.contact;
  * 
  */
 public class Config {
-
 	public static final String appKey = "lbarex345wykavwyspzpmaofszebkxscs6fizoih";
 	public static final String secret = "90ce2ac0cb9fdb64579eec0314ec7f7c";
 }

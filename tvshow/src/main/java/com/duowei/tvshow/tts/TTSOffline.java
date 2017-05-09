@@ -16,7 +16,7 @@ import java.io.InputStream;
 
 /**
  * Created by Administrator on 2017-05-09.
- * 离线语音
+ * 离线语音(云知声)
  */
 
 public class TTSOffline {
