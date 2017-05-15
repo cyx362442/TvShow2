@@ -11,15 +11,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
 
-import com.duowei.tvshow.adapter.CallListAdapter;
 import com.duowei.tvshow.bean.KDSCall;
 import com.duowei.tvshow.contact.Consts;
 import com.duowei.tvshow.dialog.CallDialog;
@@ -30,7 +27,7 @@ import com.duowei.tvshow.event.FinishMain;
 import com.duowei.tvshow.fragment.CallFragment;
 import com.duowei.tvshow.httputils.Post6;
 import com.duowei.tvshow.httputils.Post7;
-import com.duowei.tvshow.tts.TTSOffline;
+import com.duowei.tvshow.sound.KeySound;
 import com.duowei.tvshow.view.TextSurfaceView;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechSynthesizer;
@@ -39,7 +36,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 
@@ -57,8 +53,8 @@ public class VideoFullActivity extends AppCompatActivity{
     private CallFragment mCallFragment;
     private BroadcastReceiver mHomeReceiver;
 
-    private TTSOffline mOffline;
     private String mSoundStytle;
+    private KeySound mSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +88,7 @@ public class VideoFullActivity extends AppCompatActivity{
             mTts = SpeechSynthesizer.createSynthesizer(VideoFullActivity.this, null);
         }else if(mSoundStytle.equals("离线合成")){
             // 初始化离线语音合成对象
-            mOffline = TTSOffline.instance();
-            mOffline.initTts(this);
+            mSound = KeySound.getContext(this);
         }
         //初呼叫界面
         mCallDialog = CallDialog.getInstance();
@@ -163,7 +158,7 @@ public class VideoFullActivity extends AppCompatActivity{
                                 mTts.setParameter(SpeechConstant.VOLUME, "100");
                                 mTts.startSpeaking("请"+call.getTableno()+"号到柜台取餐", null);
                             }else if(mSoundStytle.equals("离线合成")){
-                                mOffline.TTSPlay("请"+call.getTableno()+"号到前台取餐");
+                                soundOffLine(call);
                             }
                         }
                     });
@@ -186,6 +181,31 @@ public class VideoFullActivity extends AppCompatActivity{
                 }
             }
         }).start();
+    }
+
+    private void soundOffLine(KDSCall call) {
+        try {
+            mSound.playSound('f',0);
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        for(int i=0;i<call.getTableno().length();i++){
+            char c = call.getTableno().charAt(i);
+            try {
+                mSound.playSound(c,0);
+                Thread.sleep(400);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        mSound.playSound('s',0);
+        try {
+            Thread.sleep(400);
+            mSound.playSound('l',0);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Subscribe
@@ -234,9 +254,6 @@ public class VideoFullActivity extends AppCompatActivity{
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mHomeReceiver);
-        if(mOffline!=null){
-            mOffline.setRelease();
-        }
     }
 
     class HomeReceiver extends BroadcastReceiver {
