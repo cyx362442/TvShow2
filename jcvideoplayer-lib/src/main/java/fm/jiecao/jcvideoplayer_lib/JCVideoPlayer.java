@@ -192,7 +192,7 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
         ivThumb.setVisibility(View.VISIBLE);
         ivStart.setVisibility(View.VISIBLE);
         llBottomControl.setVisibility(View.INVISIBLE);
-        pbBottom.setVisibility(View.VISIBLE);
+//        pbBottom.setVisibility(View.VISIBLE);
         CURRENT_STATE = CURRENT_STATE_NORMAL;
         setTitleVisibility(View.VISIBLE);
         if (uuid.equals(JCMediaManager.intance().uuid)) {
@@ -227,7 +227,7 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
         ivThumb.setVisibility(View.VISIBLE);
         ivStart.setVisibility(View.VISIBLE);
         llBottomControl.setVisibility(View.INVISIBLE);
-        pbBottom.setVisibility(View.VISIBLE);
+//        pbBottom.setVisibility(View.VISIBLE);
         CURRENT_STATE = CURRENT_STATE_NORMAL;
         setTitleVisibility(View.VISIBLE);
 
@@ -281,7 +281,7 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
             ivStart.setVisibility(View.VISIBLE);
             ivThumb.setVisibility(View.VISIBLE);
             llBottomControl.setVisibility(View.INVISIBLE);
-            pbBottom.setVisibility(View.VISIBLE);
+//            pbBottom.setVisibility(View.VISIBLE);
             ivCover.setVisibility(View.VISIBLE);
             setTitleVisibility(View.VISIBLE);
             updateStartImage();
@@ -451,7 +451,7 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
     //只是onClickToggleClear这个方法中逻辑的一部分
     private void dismissControlView() {
         llBottomControl.setVisibility(View.INVISIBLE);
-        pbBottom.setVisibility(View.VISIBLE);
+//        pbBottom.setVisibility(View.VISIBLE);
         setTitleVisibility(View.INVISIBLE);
         ivStart.setVisibility(View.INVISIBLE);
     }
@@ -466,7 +466,7 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
         if (CURRENT_STATE == CURRENT_STATE_PREPAREING) {
             if (llBottomControl.getVisibility() == View.VISIBLE) {
                 llBottomControl.setVisibility(View.INVISIBLE);
-                pbBottom.setVisibility(View.VISIBLE);
+//                pbBottom.setVisibility(View.VISIBLE);
                 setTitleVisibility(View.INVISIBLE);
             } else {
 //                llBottomControl.setVisibility(View.VISIBLE);
@@ -478,7 +478,7 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
         } else if (CURRENT_STATE == CURRENT_STATE_PLAYING) {
             if (llBottomControl.getVisibility() == View.VISIBLE) {
                 llBottomControl.setVisibility(View.INVISIBLE);
-                pbBottom.setVisibility(View.VISIBLE);
+//                pbBottom.setVisibility(View.VISIBLE);
                 setTitleVisibility(View.INVISIBLE);
                 ivStart.setVisibility(View.INVISIBLE);
             } else {
@@ -492,7 +492,7 @@ public class JCVideoPlayer extends FrameLayout implements View.OnClickListener, 
         } else if (CURRENT_STATE == CURRENT_STATE_PAUSE) {
             if (llBottomControl.getVisibility() == View.VISIBLE) {
                 llBottomControl.setVisibility(View.INVISIBLE);
-                pbBottom.setVisibility(View.VISIBLE);
+//                pbBottom.setVisibility(View.VISIBLE);
                 setTitleVisibility(View.INVISIBLE);
                 ivStart.setVisibility(View.INVISIBLE);
             } else {
