@@ -40,21 +40,21 @@ import java.util.ArrayList;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 
 public class VideoFullActivity extends AppCompatActivity{
-    private ArrayList<String> videoPath;
     private JCVideoPlayer mJcVideoPlayer;
-    private TextSurfaceView mTsfv;
     // 语音合成对象
     private SpeechSynthesizer mTts;
     private CallDialog mCallDialog;
     private Handler mHandler;
     private Runnable mRun;
-    private Intent mIntent;
 
     private CallFragment mCallFragment;
     private BroadcastReceiver mHomeReceiver;
 
     private String mSoundStytle;
     private KeySound mSound;
+    private String mViewWeight;
+    private String mShowStytle;
+    private ArrayList<String> mVideoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,50 +64,77 @@ public class VideoFullActivity extends AppCompatActivity{
         //禁止修眠
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_video_full);
-        setViewWeight();
-        SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
-        mSoundStytle = preferences.getString("soundstytle", "在线合成");
-
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        mCallFragment = new CallFragment();
-        ft.replace(R.id.frame_call, mCallFragment);
-        ft.commit();
-
-        mIntent = getIntent();
-        if(mIntent ==null){
-            Toast.makeText(this,"找到不到视频",Toast.LENGTH_LONG).show();
-            return;
-        }
-        videoPath = mIntent.getStringArrayListExtra("selectPaths");
+        Intent intent = getIntent();
         EventBus.getDefault().register(this);
-        //开启呼叫轮询
-        startCall();
-        // 初始化合成对象
-        if(mSoundStytle.equals("在线合成")){
-            mTts = SpeechSynthesizer.createSynthesizer(VideoFullActivity.this, null);
-        }else if(mSoundStytle.equals("离线合成")){
-            // 初始化离线语音合成对象
-            mSound = KeySound.getContext(this);
+
+        mJcVideoPlayer = (JCVideoPlayer) findViewById(R.id.jcvideoplayer);
+        TextSurfaceView tsf1 = (TextSurfaceView) findViewById(R.id.textsurfaceview);
+        TextSurfaceView tsf2 = (TextSurfaceView) findViewById(R.id.textsurfaceview2);
+        View frame = findViewById(R.id.frame_call);
+        SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
+        mShowStytle = preferences.getString("callvalue", "关闭");
+        if(mShowStytle.equals("关闭")){//纯广告播放模式
+            tsf2.setVisibility(View.VISIBLE);
+            tsf1.setVisibility(View.GONE);
+            frame.setVisibility(View.GONE);
+            showText(intent,tsf2);
+        }else{//开启呼叫模式
+            tsf2.setVisibility(View.GONE);
+            tsf1.setVisibility(View.VISIBLE);
+            frame.setVisibility(View.VISIBLE);
+            showText(intent,tsf1);//广告词
+
+            initFragment();
+
+            mSoundStytle = preferences.getString("soundstytle", "在线合成");
+            mViewWeight = preferences.getString("view_weight", "1:2");
+            setViewWeight();//设置呼叫占比
+            // 初始化合成对象
+            if(mSoundStytle.equals("在线合成")){
+                mTts = SpeechSynthesizer.createSynthesizer(VideoFullActivity.this, null);
+            }else if(mSoundStytle.equals("离线合成")){
+                // 初始化离线语音合成对象
+                mSound = KeySound.getContext(this);
+            }
+            //初呼叫界面
+            mCallDialog = CallDialog.getInstance();
+            //开启呼叫轮询
+            startCall();
         }
-        //初呼叫界面
-        mCallDialog = CallDialog.getInstance();
+        //视频文件件路径
+        mVideoPath = intent.getStringArrayListExtra("selectPaths");
 
         mHomeReceiver = new HomeReceiver();
         IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         registerReceiver(mHomeReceiver,filter);
     }
 
+    private void initFragment() {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        mCallFragment = new CallFragment();
+        ft.replace(R.id.frame_call, mCallFragment);
+        ft.commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mVideoPath ==null|| mVideoPath.size()<=0){
+            Toast.makeText(this,"找到不到视频",Toast.LENGTH_LONG).show();
+        }else{
+            mJcVideoPlayer.setUp(mVideoPath.get(0),"","");
+        }
+    }
+
     /**设置屏占比*/
     private void setViewWeight() {
-        SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
-        String viewWeight = preferences.getString("view_weight", "1:2");
         View callView = findViewById(R.id.frame_call);
-        View image = findViewById(R.id.jcvideoplayer);
+        View image = findViewById(R.id.linearLayout);
         LinearLayout.LayoutParams paramsWeight = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         LinearLayout.LayoutParams paramsWeight2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        paramsWeight.weight = Integer.parseInt(viewWeight.substring(0,1));
-        paramsWeight2.weight=Integer.parseInt(viewWeight.substring(2,3));
+        paramsWeight.weight = Integer.parseInt(mViewWeight.substring(0,1));
+        paramsWeight2.weight=Integer.parseInt(mViewWeight.substring(2,3));
         callView.setLayoutParams(paramsWeight2);
         image.setLayoutParams(paramsWeight);
     }
@@ -217,26 +244,21 @@ public class VideoFullActivity extends AppCompatActivity{
         mCallFragment.setListWait(event);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mJcVideoPlayer = (JCVideoPlayer) findViewById(R.id.jcvideoplayer);
-        mTsfv = (TextSurfaceView) findViewById(R.id.textsurfaceview);
-        mJcVideoPlayer.setUp(videoPath.get(0),"","");
-//        mJcVideoPlayer.setUpForFullscreen(videoPath.get(0),"","");
+
+    private void showText(Intent intent,TextSurfaceView tsf) {
         /**滚动文字内容*/
-        if(!TextUtils.isEmpty(mIntent.getStringExtra("ad"))){
-            mTsfv.setMove(true);
-            mTsfv.setContent("    "+mIntent.getStringExtra("ad"));
+        if(!TextUtils.isEmpty(intent.getStringExtra("ad"))){
+            tsf.setMove(true);
+            tsf.setContent("    "+intent.getStringExtra("ad"));
         }else{
-            mTsfv.setMove(false);
-            mTsfv.setContent("");
+            tsf.setMove(false);
+            tsf.setContent("");
         }
         /**滚动文字颜色*/
-        if(!TextUtils.isEmpty(mIntent.getStringExtra("color"))){
-            mTsfv.setFontColor(mIntent.getStringExtra("color"));
+        if(!TextUtils.isEmpty(intent.getStringExtra("color"))){
+            tsf.setFontColor(intent.getStringExtra("color"));
         }else{
-            mTsfv.setFontColor("#ffffff");
+            tsf.setFontColor("#ffffff");
         }
     }
 

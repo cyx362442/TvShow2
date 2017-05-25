@@ -17,12 +17,24 @@
             android:layout_height="match_parent"
             android:layout_weight="2">
         </FrameLayout>
-        <fm.jiecao.jcvideoplayer_lib.JCVideoPlayer
-            android:id="@+id/jcvideoplayer"
+        <RelativeLayout
+            android:id="@+id/linearLayout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
-        </fm.jiecao.jcvideoplayer_lib.JCVideoPlayer>
+            <fm.jiecao.jcvideoplayer_lib.JCVideoPlayer
+                android:id="@+id/jcvideoplayer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+            </fm.jiecao.jcvideoplayer_lib.JCVideoPlayer>
+            <com.duowei.tvshow.view.TextSurfaceView
+                android:id="@+id/textsurfaceview2"
+                android:layout_width="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_height="80dp"
+               />
+        </RelativeLayout>
     </LinearLayout>
     <com.duowei.tvshow.view.TextSurfaceView
         android:id="@+id/textsurfaceview"

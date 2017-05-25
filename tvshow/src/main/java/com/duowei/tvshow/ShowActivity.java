@@ -42,7 +42,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 
 import java.io.File;
-import java.util.ArrayList;
 
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 
@@ -52,18 +51,17 @@ public class ShowActivity extends AppCompatActivity {
     private int[] mId;
     private File mFile;
     private VideoFragment mFragment;
-    private int mLastTime=0;
-    private TextSurfaceView mTsfv;
     private CallDialog mCallDialog;
     private Handler mHandler;
     private Runnable mRun;
-    private ArrayList<String>listUrl=new ArrayList<>();
     // 语音合成对象
     private SpeechSynthesizer mTts;
     private CallFragment mCallFragment;
     private BroadcastReceiver mHomeReceiver;
     private String mSoundStytle;
     private KeySound mSound;
+    private String mViewWeight;
+    private Intent mIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,46 +71,59 @@ public class ShowActivity extends AppCompatActivity {
         //禁止修眠
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_show);
-        setViewWeight();
-        SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
-        mSoundStytle = preferences.getString("soundstytle", "在线合成");
 
         EventBus.getDefault().register(this);
+        mIntent = getIntent();
         mImageView = (ImageView) findViewById(R.id.image);
-        mTsfv = (TextSurfaceView) findViewById(R.id.textView);
+        View frame = findViewById(R.id.frame_call);
+        TextSurfaceView tsv1 = (TextSurfaceView) findViewById(R.id.textView);
+        TextSurfaceView tsv2 = (TextSurfaceView) findViewById(R.id.textView2);
 
-        initCallView();
+        SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
+        String showStytle = preferences.getString("callvalue", "关闭");
+        if(showStytle.equals("关闭")){//纯广告播放式
+            frame.setVisibility(View.GONE);
+            tsv1.setVisibility(View.GONE);
+            tsv2.setVisibility(View.VISIBLE);
+            startShow(tsv2);
+        }else{//显示呼叫取餐
+            frame.setVisibility(View.VISIBLE);
+            tsv1.setVisibility(View.VISIBLE);
+            tsv2.setVisibility(View.GONE);
+            mSoundStytle = preferences.getString("soundstytle", "在线合成");
+            mViewWeight = preferences.getString("view_weight", "1:2");
+            setViewWeight();//设置呼叫显示占比
 
-        mId = new int[]{R.id.frame01,R.id.frame02,R.id.frame03,
-                R.id.frame04,R.id.frame05,R.id.frame06,
-                R.id.frame07,R.id.frame08,R.id.frame09,};
-        Intent intent = getIntent();
-        startShow(intent);
-        //开启呼叫轮询
-        startCall();
-        // 初始化在线语音合成对象
-        if(mSoundStytle.equals("在线合成")){
-            mTts = SpeechSynthesizer.createSynthesizer(ShowActivity.this, mTtsInitListener);
-        }else if(mSoundStytle.equals("离线合成")){
-            // 初始化离线语音合成对象
-            mSound = KeySound.getContext(this);
+            initCallView();//初始化叫呼叫屏幕
+            mId = new int[]{R.id.frame01,R.id.frame02,R.id.frame03,
+                    R.id.frame04,R.id.frame05,R.id.frame06,
+                    R.id.frame07,R.id.frame08,R.id.frame09,};
+            //开启呼叫轮询
+            startCall();
+            // 初始化在线语音合成对象
+            if(mSoundStytle.equals("在线合成")){
+                mTts = SpeechSynthesizer.createSynthesizer(ShowActivity.this, mTtsInitListener);
+            }else if(mSoundStytle.equals("离线合成")){
+                // 初始化离线语音合成对象
+                mSound = KeySound.getContext(this);
+            }
+            mCallDialog = CallDialog.getInstance();
+            startShow(tsv1);
         }
 
-        mCallDialog = CallDialog.getInstance();
         mHomeReceiver = new HomeReceiver();
         IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         registerReceiver(mHomeReceiver,filter);
+
     }
     /**设置屏占比*/
     private void setViewWeight() {
-        SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
-        String viewWeight = preferences.getString("view_weight", "1:2");
         View callView = findViewById(R.id.frame_call);
         View image = findViewById(R.id.relative);
         LinearLayout.LayoutParams paramsWeight = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         LinearLayout.LayoutParams paramsWeight2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        paramsWeight.weight = Integer.parseInt(viewWeight.substring(0,1));
-        paramsWeight2.weight=Integer.parseInt(viewWeight.substring(2,3));
+        paramsWeight.weight = Integer.parseInt(mViewWeight.substring(0,1));
+        paramsWeight2.weight=Integer.parseInt(mViewWeight.substring(2,3));
         callView.setLayoutParams(paramsWeight2);
         image.setLayoutParams(paramsWeight);
     }
@@ -125,17 +136,17 @@ public class ShowActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    private void startShow(Intent intent) {
-        if(intent.getStringExtra("image_name")!=null&&intent.getStringExtra("video_name")==null){
-            mFile=new File(FileDir.getVideoName()+intent.getStringExtra("image_name"));//拼接图片路径
+    private void startShow(TextSurfaceView tsfv) {
+        if(mIntent.getStringExtra("image_name")!=null&&mIntent.getStringExtra("video_name")==null){
+            mFile=new File(FileDir.getVideoName()+mIntent.getStringExtra("image_name"));//拼接图片路径
             Picasso.with(this).load(mFile).fit().centerInside().into(mImageView);
-        }else if(intent.getStringExtra("video_name")!=null&&intent.getStringExtra("image_name")!=null){
-            mFile=new File(FileDir.getVideoName()+intent.getStringExtra("image_name"));//拼接图片路径
+        }else if(mIntent.getStringExtra("video_name")!=null&&mIntent.getStringExtra("image_name")!=null){
+            mFile=new File(FileDir.getVideoName()+mIntent.getStringExtra("image_name"));//拼接图片路径
             Picasso.with(ShowActivity.this).load(mFile).fit().centerInside().into(mImageView);
             mFragment=new VideoFragment();
-            int place = Integer.parseInt(intent.getStringExtra("video_palce"));//视频位置
+            int place = Integer.parseInt(mIntent.getStringExtra("video_palce"));//视频位置
             Bundle bundle = new Bundle();
-            bundle.putString("videoname",intent.getStringExtra("video_name"));
+            bundle.putString("videoname",mIntent.getStringExtra("video_name"));
             mFragment.setArguments(bundle);
             FragmentManager fm = getFragmentManager();
             FragmentTransaction transaction = fm.beginTransaction();
@@ -143,18 +154,18 @@ public class ShowActivity extends AppCompatActivity {
             transaction.commit();
         }
         /**滚动文字内容*/
-        if(!TextUtils.isEmpty(intent.getStringExtra("ad"))){
-            mTsfv.setMove(true);
-            mTsfv.setContent("    "+intent.getStringExtra("ad"));
+        if(!TextUtils.isEmpty(mIntent.getStringExtra("ad"))){
+            tsfv.setMove(true);
+            tsfv.setContent("    "+mIntent.getStringExtra("ad"));
         }else{
-            mTsfv.setMove(false);
-            mTsfv.setContent("");
+            tsfv.setMove(false);
+            tsfv.setContent("");
         }
         /**滚动文字颜色*/
-        if(!TextUtils.isEmpty(intent.getStringExtra("color"))){
-            mTsfv.setFontColor(intent.getStringExtra("color"));
+        if(!TextUtils.isEmpty(mIntent.getStringExtra("color"))){
+            tsfv.setFontColor(mIntent.getStringExtra("color"));
         }else{
-            mTsfv.setFontColor("#ffffff");
+            tsfv.setFontColor("#ffffff");
         }
     }
 
@@ -265,7 +276,6 @@ public class ShowActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mLastTime=0;
     }
     @Override
     protected void onStop() {
