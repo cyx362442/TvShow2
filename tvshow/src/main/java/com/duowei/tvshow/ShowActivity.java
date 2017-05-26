@@ -81,6 +81,9 @@ public class ShowActivity extends AppCompatActivity {
 
         SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
         String showStytle = preferences.getString("callvalue", "关闭");
+        mId = new int[]{R.id.frame01,R.id.frame02,R.id.frame03,
+                R.id.frame04,R.id.frame05,R.id.frame06,
+                R.id.frame07,R.id.frame08,R.id.frame09,};
         if(showStytle.equals("关闭")){//纯广告播放式
             frame.setVisibility(View.GONE);
             tsv1.setVisibility(View.GONE);
@@ -95,9 +98,6 @@ public class ShowActivity extends AppCompatActivity {
             setViewWeight();//设置呼叫显示占比
 
             initCallView();//初始化叫呼叫屏幕
-            mId = new int[]{R.id.frame01,R.id.frame02,R.id.frame03,
-                    R.id.frame04,R.id.frame05,R.id.frame06,
-                    R.id.frame07,R.id.frame08,R.id.frame09,};
             //开启呼叫轮询
             startCall();
             // 初始化在线语音合成对象
