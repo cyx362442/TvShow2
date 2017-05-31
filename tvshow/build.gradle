@@ -8,8 +8,8 @@ android {
         applicationId "com.duowei.tvshow"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 5
-        versionName "v20170525"
+        versionCode 7
+        versionName "v20170531"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -32,6 +32,7 @@ dependencies {
     compile files('libs/netroid-1.2.1.jar')
     compile project(':jcvideoplayer-lib')
     compile files('libs/Msc.jar')
+    compile files('libs/usc.jar')
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.android.support:support-v4:25.2.0'
     compile 'com.android.support:recyclerview-v7:25.2.0'
@@ -42,9 +43,10 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     compile 'com.android.support:support-vector-drawable:25.2.0'
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.arialyy.frame:MVVM2:2.2.0'
+    compile 'com.arialyy.aria:Aria:3.0.0'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
     testCompile 'junit:junit:4.12'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
-    compile files('libs/usc.jar')
 }

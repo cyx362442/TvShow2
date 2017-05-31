@@ -5,12 +5,11 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import android.os.IBinder;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -19,30 +18,20 @@ import com.duowei.tvshow.bean.OneDataBean;
 import com.duowei.tvshow.bean.ZoneTime;
 import com.duowei.tvshow.contact.Consts;
 import com.duowei.tvshow.contact.FileDir;
-import com.duowei.tvshow.event.ReConnect;
-import com.duowei.tvshow.helper.VersionUpdate;
-import com.duowei.tvshow.helper.VersionUpdateImpl;
-import com.duowei.tvshow.httputils.AsyncUtils;
+import com.duowei.tvshow.fragment.LoadFragment;
 import com.duowei.tvshow.httputils.DownHTTP;
 import com.duowei.tvshow.httputils.VolleyResultListener;
-import com.duowei.tvshow.httputils.ZipExtractorTask;
-import com.duowei.tvshow.service.DownloadService;
-import com.duowei.tvshow.widget.NumberProgressBar;
 import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
-public class WelcomeActivity extends AppCompatActivity implements VersionUpdateImpl {
-
-    private SharedPreferences.Editor mEdit;
+public class WelcomeActivity extends AppCompatActivity{
     private String currentVersion="";//当前版本
     private String mZoneNum="";
     private String url;
@@ -52,52 +41,11 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
     private Intent mIntent;
     private List<LoadFile>listFile=new ArrayList<>();
     private List<OneDataBean>mOneDataBeanList=new ArrayList<>();
-    private int loadPosition=0;
-
-    /**接收广播*/
-    private NumberProgressBar bnp;
-    private boolean isBindService;
-    private ServiceConnection conn = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            DownloadService.DownloadBinder binder = (DownloadService.DownloadBinder) service;
-            DownloadService downloadService = binder.getService();
-            //接口回调，下载进度
-            downloadService.setOnProgressListener(new DownloadService.OnProgressListener() {
-                @Override
-                public void onProgress(float fraction) {
-                    bnp.setProgress((int)(fraction * 100));
-                    //判断是否真的下载完成，以及是否注册绑定过服务
-                    if (fraction == DownloadService.UNBIND_SERVICE && isBindService) {
-                        mLl_loading.setVisibility(View.GONE);
-                        unbindService(conn);
-                        isBindService = false;
-                        //解压、删除文件
-                        deleteDir();
-                    }else if(fraction==DownloadService.UNCONNECT){
-                        unbindService(conn);
-                        isBindService = false;
-                        VersionUpdate.checkVersion(WelcomeActivity.this,mDown_data);
-                    }
-                }
-            });
-        }
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-    };
-    private LinearLayout mLl_loading;
-    private String mDown_data;
-    private LinearLayout mLl_loading2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-        EventBus.getDefault().register(this);
-        bnp = (NumberProgressBar) findViewById(R.id.number_bar);
-        mLl_loading = (LinearLayout) findViewById(R.id.ll_loading);
-        mLl_loading2 = (LinearLayout) findViewById(R.id.ll_loading2);
         if(!Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){
             Toast.makeText(this,"当前内存卡不可用",Toast.LENGTH_LONG).show();
             return;
@@ -105,17 +53,8 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
         if (getPreferData()) return;
         Http_contents();
     }
-
-    //第一次连接失败，重新下载连接
-    @Subscribe
-    public void reConnect(ReConnect event) throws InterruptedException {
-        Thread.sleep(1000);
-       Http_File(mDown_data);
-    }
-
     private boolean getPreferData() {
         SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
-        mEdit = preferences.edit();
         currentVersion = preferences.getString("version", "");
         mWurl = preferences.getString("wurl", "");
         mWeid = preferences.getString("weid", "");
@@ -169,9 +108,7 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
                     listFile.clear();
                     mOneDataBeanList.clear();
                     Consts.version=version;
-                    mDown_data = zoneTime.getDown_data();//压缩包下载地址
                     List<ZoneTime.ZoneTimeBean> list_zone = zoneTime.getZone_time();//电视区域信息
-                    DataSupport.deleteAll(OneDataBean.class);
                     /**找到该电视区号对应的数据信息集*/
                     for(int i=0;i<list_zone.size();i++){
                         ZoneTime.ZoneTimeBean.ZoneBean zone = list_zone.get(i).getZone();//电视区号
@@ -188,37 +125,30 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
                                 String video_url = one_data.get(j).getFile_url().getVideo_url();
                                 //数据库资源
                                 mOneDataBeanList.add(new OneDataBean(time, ad, video_palce, image_name, video_name,image_url,video_url,color));
-                                //查询本地数据库
-//                                List<OneDataBean> listImage = DataSupport.select("image_name").where("image_name=?",image_name).find(OneDataBean.class);
-//                                List<OneDataBean> listVideo = DataSupport.select("video_name").where("video_name=?",video_name).find(OneDataBean.class);
-//                                //图片名称不存在，添加图片URL地址
-//                                if(listImage.size()<=0){
-//                                    listFile.add(new LoadFile(image_url,image_name));
-//                                }
-//                                //视频名称不存在，添加视频URL地址
-//                                if(listVideo.size()<=0){
-//                                    listFile.add(new LoadFile(image_url,image_name));
-//                                }
-                                /**插入数据库*/
-                                OneDataBean oneDataBean = new OneDataBean(time, ad, video_palce, image_name, video_name,image_url,video_url,color);
-                                oneDataBean.save();
+                                if(!image_url.equals("null")){
+                                    listFile.add(new LoadFile(image_url,image_name));
+                                }
+                                if(!video_url.equals("null")){
+                                    listFile.add(new LoadFile(video_url,video_name));
+                                }
                             }
                         }
                     }
+                    deleteDir();
+                    FragmentManager fm = getSupportFragmentManager();
+                    FragmentTransaction ft = fm.beginTransaction();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("listfile",(Serializable) listFile);
+                    LoadFragment loadFragment = new LoadFragment();
+                    loadFragment.setArguments(bundle);
+                    ft.replace(R.id.frame, loadFragment);
+                    ft.commit();
 //                    /**插入数据库*/
-//                    DataSupport.deleteAll(OneDataBean.class);
-//                    DataSupport.saveAll(mOneDataBeanList);
-                    /**下载图片、视频*/
-//                    Http_File(mDown_data);
-//                    startDownLoad(down_data);
-                    VersionUpdate.checkVersion(WelcomeActivity.this,mDown_data);
+                    DataSupport.deleteAll(OneDataBean.class);
+                    DataSupport.saveAll(mOneDataBeanList);
                 }
             }
         });
-    }
-    private void Http_File(String url) {
-        AsyncUtils asyncUtils = new AsyncUtils(WelcomeActivity.this);
-        asyncUtils.execute(url);
     }
     private void toMainActivity(){
         mIntent = new Intent(this, MainActivity.class);
@@ -230,9 +160,6 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
     public  void deleteDir() {
         File dir = new File(FileDir.getVideoName());
         if (dir == null || !dir.exists() || !dir.isDirectory()){
-            /**解压出新文件*/
-            ZipExtractorTask task = new ZipExtractorTask(FileDir.getZipVideo(), FileDir.getVideoName(), this, true);
-            task.execute();
         }else{
             for (File file : dir.listFiles()) {
                 if (file.isFile())
@@ -240,34 +167,11 @@ public class WelcomeActivity extends AppCompatActivity implements VersionUpdateI
                 else if (file.isDirectory())
                     deleteDir(); // 递规的方式删除文件夹
             }
-            /**解压出新文件*/
-            ZipExtractorTask task = new ZipExtractorTask(FileDir.getZipVideo(), FileDir.getVideoName(), this, true);
-            task.execute();
         }
     }
-
-    @Override
-    public void bindService(String url) {
-        Intent intent = new Intent(this, DownloadService.class);
-        intent.putExtra(DownloadService.BUNDLE_KEY_DOWNLOAD_URL, url);
-//        intent.putExtra(BUNDLE_KEY_DOWNLOAD_NAME,name);
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable(DownloadService.BUNDLE_KEY_DOWNLOAD_FILE, (Serializable) listFile);
-//        intent.putExtras(bundle);
-        isBindService = bindService(intent, conn, BIND_AUTO_CREATE);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        mIntent=new Intent(this,MainActivity.class);
-        startActivity(mIntent);
-        finish();
+        toMainActivity();
     }
 }
