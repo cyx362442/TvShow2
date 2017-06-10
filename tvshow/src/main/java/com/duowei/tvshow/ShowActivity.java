@@ -192,7 +192,7 @@ public class ShowActivity extends AppCompatActivity {
         mHandler.removeCallbacks(mRun);
         new Thread(new Runnable() {
             @Override
-            public void run() {
+            public synchronized void run() {
                 if (call !=null){
                     //暂停视频
                     if(mFragment!=null){
@@ -211,7 +211,7 @@ public class ShowActivity extends AppCompatActivity {
                                 mTts.setParameter(SpeechConstant.PITCH, "50");
                                 //设置合成音量
                                 mTts.setParameter(SpeechConstant.VOLUME, "100");
-                                mTts.startSpeaking("请"+call.getTableno()+"号到前台取餐", null);
+                                mTts.startSpeaking("请"+call.getTableno()+"号到前台取餐。", null);
                             }else if(mSoundStytle.equals("离线合成")){
                                 soundOffLine(call);
                             }
@@ -239,9 +239,10 @@ public class ShowActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void soundOffLine(KDSCall call) {
+    private synchronized void soundOffLine(KDSCall call) {
         try {
-        mSound.playSound('f',0);
+            Thread.sleep(200);
+            mSound.playSound('f',0);
             Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
