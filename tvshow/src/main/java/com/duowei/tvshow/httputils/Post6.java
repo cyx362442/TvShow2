@@ -1,5 +1,7 @@
 package com.duowei.tvshow.httputils;
 
+import android.util.Log;
+
 import com.android.volley.VolleyError;
 import com.duowei.tvshow.bean.KDSCall;
 import com.duowei.tvshow.contact.Consts;
@@ -34,6 +36,7 @@ public class Post6 {
             }
             @Override
             public void onResponse(String response) {
+                Log.e("response=====",response);
                if(response.equals("]")){
                    KDSCall[] calls=new KDSCall[0];
                    EventBus.getDefault().post(new BrushCall(calls));

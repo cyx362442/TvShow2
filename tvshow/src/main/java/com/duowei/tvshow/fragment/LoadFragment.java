@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arialyy.aria.core.Aria;
 import com.arialyy.aria.core.download.DownloadEntity;
@@ -35,18 +36,24 @@ public class LoadFragment extends AbsFragment {
     private TextView mSize;
     private TextView mComplete;
     private TextView mSpeed;
+    private List<LoadFile> listFile;
+    private int num=0;
 
     public LoadFragment() {
         // Required empty public constructor
     }
-    List<LoadFile> listFile;
-    int num=0;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         Bundle bundle = getArguments();
         listFile = (List<LoadFile>) bundle.getSerializable("listfile");
+    }
+
+    private void toMainActivity() {
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        startActivity(intent);
+        getActivity().finish();
     }
 
     @Override
@@ -58,12 +65,22 @@ public class LoadFragment extends AbsFragment {
         mSize = (TextView) inflate.findViewById(R.id.tv_size);
         mComplete = (TextView) inflate.findViewById(R.id.tv_complete);
         mSpeed = (TextView) inflate.findViewById(R.id.tv_speed);
+        return inflate;
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(listFile.size()<=0){
+            Toast.makeText(getActivity(),"下载失败，请检查网络连接设置",Toast.LENGTH_SHORT).show();
+            toMainActivity();
+            return;
+        }
         Aria.download(getActivity())
                 .load(listFile.get(num).url)
                 .setDownloadPath(FileDir.getVideoName()+listFile.get(num).fileName)
                 .start();
-        return inflate;
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -72,6 +89,9 @@ public class LoadFragment extends AbsFragment {
     }
     @Override
     protected void init(Bundle savedInstanceState) {
+        if(listFile.size()<=0){
+            return;
+        }
         if (Aria.download(getActivity()).taskExists(listFile.get(num).url)) {
             DownloadTarget target = Aria.download(this).load(listFile.get(num).url);
             int p = (int) (target.getCurrentProgress() * 100 / target.getFileSize());
@@ -146,9 +166,7 @@ public class LoadFragment extends AbsFragment {
                 SharedPreferences.Editor edit = preferences.edit();
                 edit.putString("version", Consts.version);
                 edit.commit();
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                startActivity(intent);
-                getActivity().finish();
+                toMainActivity();
             }
         }
     }
