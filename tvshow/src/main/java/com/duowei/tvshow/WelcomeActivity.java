@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -133,6 +134,11 @@ public class WelcomeActivity extends AppCompatActivity{
                                 }
                             }
                         }
+                    }
+                    if(listFile.size()<=0){
+                        Toast.makeText(WelcomeActivity.this,"下载失败",Toast.LENGTH_LONG).show();
+                        toMainActivity();
+                        return;
                     }
                     deleteDir();
                     FragmentManager fm = getSupportFragmentManager();

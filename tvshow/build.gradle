@@ -6,10 +6,10 @@ android {
 
     defaultConfig {
         applicationId "com.duowei.tvshow"
-        minSdkVersion 16
-        targetSdkVersion 22
-        versionCode 8
-        versionName "v20170610"
+        minSdkVersion 14
+        targetSdkVersion 25
+        versionCode 9
+        versionName "v20170801"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
