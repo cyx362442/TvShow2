@@ -225,7 +225,7 @@ public class RecyclerBanner extends FrameLayout {
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             ImageView img = (ImageView) holder.itemView.findViewById(R.id.icon);
             File file = new File(datas.get(position % datas.size()));
-            Glide.with(getContext()).load(file).priority(Priority.HIGH).placeholder(R.mipmap.bg).into(img);
+            Glide.with(getContext()).load(file).priority(Priority.HIGH).placeholder(R.mipmap.bg).fitCenter().into(img);
 //            Picasso.with(getContext()).load(file).centerInside().fit().into(img);
         }
 

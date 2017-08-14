@@ -8,9 +8,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.arialyy.aria.core.Aria;
+import com.arialyy.aria.core.download.DownloadReceiver;
+import com.arialyy.frame.util.StringUtil;
 import com.duowei.tvshow.bean.LoadFile;
 import com.duowei.tvshow.bean.OneDataBean;
 import com.duowei.tvshow.bean.ZoneTime;
@@ -20,7 +24,13 @@ import com.duowei.tvshow.fragment.LoadFragment;
 import com.duowei.tvshow.httputils.DownHTTP;
 import com.duowei.tvshow.httputils.VolleyResultListener;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
 import java.io.File;
@@ -97,6 +107,12 @@ public class WelcomeActivity extends AppCompatActivity{
             }
             @Override
             public void onResponse(String response) {
+                JsonParser jsonParser = new JsonParser();
+                JsonElement jsonElement =  jsonParser.parse(response);
+                boolean jsonObject = jsonElement.isJsonObject();
+                if(jsonObject==false){
+                    return;
+                }
                 Gson gson = new Gson();
                 ZoneTime zoneTime = gson.fromJson(response, ZoneTime.class);
                 String version = zoneTime.getVersion();//新版本号
@@ -175,6 +191,10 @@ public class WelcomeActivity extends AppCompatActivity{
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        DownloadReceiver download = Aria.download(this);
+        if(download!=null){
+            download.removeAllTask();
+        }
         toMainActivity();
     }
 }
