@@ -132,6 +132,11 @@ public class WelcomeActivity extends AppCompatActivity{
                             }
                         }
                     }
+                    if(listFile.size()<=0){
+                        Toast.makeText(WelcomeActivity.this,"下载失败",Toast.LENGTH_LONG).show();
+                        toMainActivity();
+                        return;
+                    }
                     deleteDir();
                     FragmentManager fm = getSupportFragmentManager();
                     FragmentTransaction ft = fm.beginTransaction();
