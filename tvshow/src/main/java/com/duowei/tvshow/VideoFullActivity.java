@@ -86,13 +86,13 @@ public class VideoFullActivity extends AppCompatActivity{
 
             initFragment();
 
-            mSoundStytle = preferences.getString("soundstytle", "在线合成");
+            mSoundStytle = preferences.getString("soundstytle", getString(R.string.onLine));
             mViewWeight = preferences.getString("view_weight", "1:2");
             setViewWeight();//设置呼叫占比
             // 初始化合成对象
-            if(mSoundStytle.equals("在线合成")){
+            if(mSoundStytle.equals(getString(R.string.onLine))){
                 mTts = SpeechSynthesizer.createSynthesizer(VideoFullActivity.this, null);
-            }else if(mSoundStytle.equals("离线合成")){
+            }else if(mSoundStytle.equals(getString(R.string.offLine))){
                 // 初始化离线语音合成对象
                 mSound = KeySound.getContext(this);
             }
@@ -176,7 +176,7 @@ public class VideoFullActivity extends AppCompatActivity{
                             //显示
                             mCallDialog.callShow(VideoFullActivity.this, call.getTableno());
                             /**播音*/
-                            if(mSoundStytle.equals("在线合成")){
+                            if(mSoundStytle.equals(getString(R.string.onLine))){
                                 //设置合成语速
                                 mTts.setParameter(SpeechConstant.SPEED, "20");
                                 //设置合成音调
@@ -184,7 +184,7 @@ public class VideoFullActivity extends AppCompatActivity{
                                 //设置合成音量
                                 mTts.setParameter(SpeechConstant.VOLUME, "100");
                                 mTts.startSpeaking(call.getTableno(), null);
-                            }else if(mSoundStytle.equals("离线合成")){
+                            }else if(mSoundStytle.equals(getString(R.string.onLine))){
                                 soundOffLine(call);
                             }
                         }
@@ -213,22 +213,23 @@ public class VideoFullActivity extends AppCompatActivity{
     private void soundOffLine(KDSCall call) {
         try {
             mSound.playSound('f',0);
-            Thread.sleep(200);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         for(int i=0;i<call.getTableno().length();i++){
             char c = call.getTableno().charAt(i);
             try {
-                mSound.playSound(c,0);
                 Thread.sleep(400);
+                mSound.playSound(c,0);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        mSound.playSound('s',0);
         try {
-            Thread.sleep(400);
+            Thread.sleep(300);
+            mSound.playSound('s',0);
+            Thread.sleep(300);
             mSound.playSound('l',0);
         } catch (InterruptedException e) {
             e.printStackTrace();

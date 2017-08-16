@@ -39,7 +39,7 @@
             android:dialogTitle="呼叫取菜时长" />
         <ListPreference
             android:key="list_key6"
-            android:title="语音合成方式(在线合成效果更佳)"
+            android:title="语音合成方式"
             android:summary="list_summary"
             android:entries="@array/list_sound_stytle"
             android:entryValues="@array/list_sound_stytle"

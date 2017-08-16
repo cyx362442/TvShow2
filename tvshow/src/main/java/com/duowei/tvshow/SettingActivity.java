@@ -72,7 +72,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
         mListKey3.setSummary(sharedPreferences.getString("list_key3","20"));
         mListKey4.setSummary(sharedPreferences.getString("list_key4","30"));
         mListKey5.setSummary(sharedPreferences.getString("list_key5","1:2"));
-        mListKey6.setSummary(sharedPreferences.getString("list_key6","在线合成"));
+        mListKey6.setSummary(sharedPreferences.getString("list_key6",getString(R.string.offLine)));
 
         mEtPreference4.setSummary(sharedPreferences.getString("edittext_key4",""));
         // Set up a listener whenever a key changes
@@ -121,7 +121,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
             mEdit.putString("view_weight",sharedPreferences.getString(key,"1:2"));
         }else if(key.equals("list_key6")){
             mListKey6.setSummary(sharedPreferences.getString(key,""));
-            mEdit.putString("soundstytle",sharedPreferences.getString(key,"在线合成"));
+            mEdit.putString("soundstytle",sharedPreferences.getString(key,getString(R.string.onLine)));
         }
         else if(key.equals("edittext_key4")){//前台IP
             mEtPreference4.setSummary(sharedPreferences.getString(key,""));

@@ -1,6 +1,8 @@
 package com.duowei.tvshow;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,7 +17,10 @@ import com.duowei.tvshow.event.BrushCall;
 import com.duowei.tvshow.event.CallEvent;
 import com.duowei.tvshow.httputils.Post6;
 import com.duowei.tvshow.httputils.Post7;
+import com.duowei.tvshow.sound.KeySound;
 import com.duowei.tvshow.view.RecyclerBanner;
+import com.iflytek.cloud.ErrorCode;
+import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechSynthesizer;
 
@@ -30,6 +35,23 @@ public class ImageFullActivity extends AppCompatActivity {
     private CallDialog mCallDialog;
     private Handler mHandler;
     private Runnable mRun;
+    private String mSoundStytle;
+    private KeySound mSound;
+    /**
+     * 初始化监听。
+     */
+    private InitListener mTtsInitListener = new InitListener() {
+        @Override
+        public void onInit(int code) {
+            if (code != ErrorCode.SUCCESS) {
+                Toast.makeText(ImageFullActivity.this,"初始化失败，错误代码:"+code,Toast.LENGTH_LONG).show();
+            } else {
+                // 初始化成功，之后可以调用startSpeaking方法
+                // 注：有的开发者在onCreate方法中创建完合成对象之后马上就调用startSpeaking进行合成，
+                // 正确的做法是将onCreate中的startSpeaking调用移至这里
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,8 +69,16 @@ public class ImageFullActivity extends AppCompatActivity {
         EventBus.getDefault().register(this);
         //开启呼叫轮询
         startCall();
-        // 初始化合成对象
-        mTts = SpeechSynthesizer.createSynthesizer(ImageFullActivity.this, null);
+
+        SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
+        // 初始化在线语音合成对象
+        mSoundStytle = preferences.getString("soundstytle", getString(R.string.onLine));
+        if(mSoundStytle.equals(getString(R.string.onLine))){
+            mTts = SpeechSynthesizer.createSynthesizer(ImageFullActivity.this, mTtsInitListener);
+        }else if(mSoundStytle.equals(getString(R.string.offLine))){
+            // 初始化离线语音合成对象
+            mSound = KeySound.getContext(this);
+        }
         //初呼叫界面
         mCallDialog = CallDialog.getInstance();
     }
@@ -86,14 +116,17 @@ public class ImageFullActivity extends AppCompatActivity {
                         public void run() {
                             //显示
                             mCallDialog.callShow(ImageFullActivity.this, call.getTableno());
-                            /**播音*/
-                            //设置合成语速
-                            mTts.setParameter(SpeechConstant.SPEED, "20");
-                            //设置合成音调
-                            mTts.setParameter(SpeechConstant.PITCH, "50");
-                            //设置合成音量
-                            mTts.setParameter(SpeechConstant.VOLUME, "100");
-                            int code = mTts.startSpeaking("请"+call.getTableno()+"号到柜台取餐", null);
+                            if(mSoundStytle.equals(getString(R.string.onLine))){
+                                //设置合成语速
+                                mTts.setParameter(SpeechConstant.SPEED, "30");
+                                //设置合成音调
+                                mTts.setParameter(SpeechConstant.PITCH, "50");
+                                //设置合成音量
+                                mTts.setParameter(SpeechConstant.VOLUME, "100");
+                                mTts.startSpeaking("请"+call.getTableno()+"号到前台取餐。", null);
+                            }else if(mSoundStytle.equals(getString(R.string.offLine))){
+                                soundOffLine(call);
+                            }
                         }
                     });
                     /**删除服务器上这条记录*/
@@ -114,6 +147,32 @@ public class ImageFullActivity extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    private synchronized void soundOffLine(KDSCall call) {
+        try {
+            mSound.playSound('f',0);
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        for(int i=0;i<call.getTableno().length();i++){
+            char c = call.getTableno().charAt(i);
+            try {
+                Thread.sleep(400);
+                mSound.playSound(c,0);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            Thread.sleep(300);
+            mSound.playSound('s',0);
+            Thread.sleep(300);
+            mSound.playSound('l',0);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

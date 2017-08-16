@@ -10,6 +10,9 @@
     <string name="title_activity_settings">Settings</string>
     <string name="setting_url">ai.wxdw.top</string>
 
+    <string name="onLine">在线合成</string>
+    <string name="offLine">离线合成</string>
+
     <!-- 请替换成在语音云官网申请的appid -->
     <string name="app_id">58f8371c</string>
 </resources>
