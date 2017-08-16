@@ -122,6 +122,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
         }else if(key.equals("list_key6")){
             mListKey6.setSummary(sharedPreferences.getString(key,""));
             mEdit.putString("soundstytle",sharedPreferences.getString(key,getString(R.string.onLine)));
+
         }
         else if(key.equals("edittext_key4")){//前台IP
             mEtPreference4.setSummary(sharedPreferences.getString(key,""));
