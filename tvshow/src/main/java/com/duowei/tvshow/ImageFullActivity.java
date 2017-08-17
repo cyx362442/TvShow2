@@ -38,6 +38,8 @@ public class ImageFullActivity extends AppCompatActivity {
     private Runnable mRun;
     private String mSoundStytle;
     private KeySound mSound;
+
+    private boolean isFinish=true;
     /**
      * 初始化监听。
      */
@@ -83,6 +85,12 @@ public class ImageFullActivity extends AppCompatActivity {
         //初呼叫界面
         mCallDialog = CallDialog.getInstance();
     }
+
+    @Subscribe
+    public void BrushData(BrushCall event){
+        isFinish=true;
+    }
+
     /**呼叫轮询*/
     private synchronized void startCall() {
         //呼叫显示时间
@@ -96,9 +104,11 @@ public class ImageFullActivity extends AppCompatActivity {
         mHandler.postDelayed(mRun=new Runnable() {
             @Override
             public void run() {
-                mHandler.postDelayed(this,1000);
-                Log.e("======","时间");
-                Post6.instance().getCall();
+                mHandler.postDelayed(this,2000);
+                if(isFinish){
+                    Post6.instance().getCall();
+                    isFinish=false;
+                }
             }
         },5000);
     }
