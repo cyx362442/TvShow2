@@ -49,12 +49,13 @@ public class VideoFullActivity extends AppCompatActivity{
 
     private CallFragment mCallFragment;
     private BroadcastReceiver mHomeReceiver;
-
     private String mSoundStytle;
     private KeySound mSound;
     private String mViewWeight;
     private String mShowStytle;
     private ArrayList<String> mVideoPath;
+
+    private boolean isFinish=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,8 +153,11 @@ public class VideoFullActivity extends AppCompatActivity{
         mHandler.postDelayed(mRun=new Runnable() {
             @Override
             public void run() {
-                mHandler.postDelayed(this,1000);
-                Post6.instance().getCall();
+                mHandler.postDelayed(this,2000);
+                if(isFinish){
+                    Post6.instance().getCall();
+                    isFinish=false;
+                }
             }
         },5000);
     }
@@ -243,6 +247,7 @@ public class VideoFullActivity extends AppCompatActivity{
     @Subscribe
     public void BrushData(BrushCall event){
         mCallFragment.setListWait(event);
+        isFinish=true;
     }
 
 

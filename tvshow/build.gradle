@@ -8,8 +8,8 @@ android {
         applicationId "com.duowei.tvshow"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 12
-        versionName "v20170815"
+        versionCode 13
+        versionName "v20170817"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
