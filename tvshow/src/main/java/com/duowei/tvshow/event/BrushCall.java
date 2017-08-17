@@ -12,4 +12,5 @@ public class BrushCall {
     public BrushCall(KDSCall[] arrayCall) {
         this.arrayCall = arrayCall;
     }
+
 }

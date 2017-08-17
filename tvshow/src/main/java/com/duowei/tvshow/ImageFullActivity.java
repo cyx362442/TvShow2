@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -96,6 +97,7 @@ public class ImageFullActivity extends AppCompatActivity {
             @Override
             public void run() {
                 mHandler.postDelayed(this,1000);
+                Log.e("======","时间");
                 Post6.instance().getCall();
             }
         },5000);

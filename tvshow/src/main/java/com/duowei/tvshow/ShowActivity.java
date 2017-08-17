@@ -63,6 +63,8 @@ public class ShowActivity extends AppCompatActivity {
     private String mViewWeight;
     private Intent mIntent;
 
+    private boolean isFinish=true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -272,6 +274,7 @@ public class ShowActivity extends AppCompatActivity {
     @Subscribe
     public void BrushData(BrushCall event){
         mCallFragment.setListWait(event);
+        isFinish=true;
     }
 
     @Override
@@ -307,8 +310,11 @@ public class ShowActivity extends AppCompatActivity {
         mHandler.postDelayed(mRun=new Runnable() {
             @Override
             public void run() {
-                mHandler.postDelayed(this,1000);
-                Post6.instance().getCall();
+                mHandler.postDelayed(this,2000);
+                if(isFinish){
+                    Post6.instance().getCall();
+                    isFinish=false;
+                }
             }
         },5000);
     }

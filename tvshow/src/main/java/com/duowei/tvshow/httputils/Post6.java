@@ -27,12 +27,12 @@ public class Post6 {
         return post;
     }
     String sql="select xh,tableno,isnull(yhj,'0')yhj from kdscall order by xdsj desc|";
-    List<KDSCall>listCall=new ArrayList<>();
     public synchronized void getCall(){
-        listCall.clear();
         DownHTTP.postVolley6(Consts.ip, sql, new VolleyResultListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                KDSCall[] calls=new KDSCall[0];
+                EventBus.getDefault().post(new BrushCall(calls));
             }
             @Override
             public void onResponse(String response) {
