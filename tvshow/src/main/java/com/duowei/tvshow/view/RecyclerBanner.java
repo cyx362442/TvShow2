@@ -16,7 +16,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.duowei.tvshow.R;
@@ -214,8 +213,8 @@ public class RecyclerBanner extends FrameLayout {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             ImageView img = new ImageView(parent.getContext());
-            RecyclerView.LayoutParams l = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            img.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            RecyclerView.LayoutParams l = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
+            img.setScaleType(ImageView.ScaleType.FIT_XY);
             img.setLayoutParams(l);
             img.setId(R.id.icon);
             return new RecyclerView.ViewHolder(img) {};
@@ -226,7 +225,7 @@ public class RecyclerBanner extends FrameLayout {
             ImageView img = (ImageView) holder.itemView.findViewById(R.id.icon);
             File file = new File(datas.get(position % datas.size()));
             Glide.with(getContext()).load(file).priority(Priority.HIGH).placeholder(R.mipmap.bg).fitCenter().into(img);
-//            Picasso.with(getContext()).load(file).centerInside().fit().into(img);
+//            Picasso.with(getContext()).load(file).placeholder(R.mipmap.bg).centerInside().fit().into(img);
         }
 
         @Override
@@ -234,7 +233,6 @@ public class RecyclerBanner extends FrameLayout {
             return datas == null ? 0 : datas.size() < 2 ? datas.size() : Integer.MAX_VALUE;
         }
     }
-
     private class PagerSnapHelper extends LinearSnapHelper {
 
         @Override
