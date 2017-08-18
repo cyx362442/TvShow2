@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.arialyy.aria.core.Aria;
 import com.arialyy.aria.core.download.DownloadEntity;
+import com.arialyy.aria.core.download.DownloadReceiver;
 import com.arialyy.aria.core.download.DownloadTarget;
 import com.arialyy.aria.core.download.DownloadTask;
 import com.arialyy.aria.util.CommonUtil;
@@ -169,6 +170,15 @@ public class LoadFragment extends AbsFragment {
                 edit.commit();
                 toMainActivity();
             }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        DownloadReceiver download = Aria.download(this);
+        if(download!=null){
+            download.removeAllTask();
         }
     }
 }

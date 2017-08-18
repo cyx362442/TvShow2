@@ -184,10 +184,6 @@ public class WelcomeActivity extends AppCompatActivity{
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        DownloadReceiver download = Aria.download(this);
-        if(download!=null){
-            download.removeAllTask();
-        }
         toMainActivity();
     }
 }
