@@ -1,15 +1,18 @@
 package com.duowei.tvshow.httputils;
 
+import android.util.Log;
+
 import com.android.volley.VolleyError;
 import com.duowei.tvshow.bean.KDSCall;
 import com.duowei.tvshow.contact.Consts;
 import com.duowei.tvshow.event.BrushCall;
 import com.duowei.tvshow.event.CallEvent;
+import com.duowei.tvshow.event.Update;
 import com.google.gson.Gson;
-
-import java.util.ArrayList;
-import java.util.List;
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by Administrator on 2017-04-19.
@@ -48,6 +51,27 @@ public class Post6 {
                     }
                 }
                 EventBus.getDefault().post(new BrushCall(calls));
+            }
+        });
+    }
+    public synchronized void getVersion(){
+        String url="http://ouwtfo4eg.bkt.clouddn.com/tvshow.txt";
+        DownHTTP.getVolley(url, new VolleyResultListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    String versionCode = jsonObject.getString("versionCode");
+                    String msg = jsonObject.getString("msg");
+                    String url = jsonObject.getString("url");
+                    String name = jsonObject.getString("name");
+                    EventBus.getDefault().post(new Update(versionCode,msg,url,name));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

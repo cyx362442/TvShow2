@@ -12,8 +12,17 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.duowei.tvshow.contact.Consts;
+import com.duowei.tvshow.event.Update;
+import com.duowei.tvshow.fragment.UpdateFragment;
+import com.duowei.tvshow.httputils.Post6;
+import com.duowei.tvshow.utils.Version;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 
 public class SettingActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener {
@@ -34,6 +43,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
         SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
         mEdit = preferences.edit();
         addPreferencesFromResource(R.xml.preferenc);
@@ -51,8 +61,11 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
         mListKey5 = (ListPreference) findPreference("list_key5");//屏占比
         mListKey6 = (ListPreference) findPreference("list_key6");
         mEtPreference4 = (EditTextPreference) findPreference("edittext_key4");//前台IP
+        Preference version = findPreference("version");
+        version.setSummary(Version.getVersionName(this));
 
         findPreference("dect_settings").setOnPreferenceClickListener(this);
+        version.setOnPreferenceClickListener(this);
     }
 
     @Override
@@ -122,9 +135,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
         }else if(key.equals("list_key6")){
             mListKey6.setSummary(sharedPreferences.getString(key,""));
             mEdit.putString("soundstytle",sharedPreferences.getString(key,getString(R.string.onLine)));
-
-        }
-        else if(key.equals("edittext_key4")){//前台IP
+        }else if(key.equals("edittext_key4")){//前台IP
             mEtPreference4.setSummary(sharedPreferences.getString(key,""));
             mEdit.putString("ip",sharedPreferences.getString(key,""));
         }
@@ -133,33 +144,52 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-        SharedPreferences spf = getPreferenceScreen().getSharedPreferences();
-        if(spf.getString(Consts.LIST_KEY,"").equals("")||
-                spf.getString("edittext_key2","").equals("")||spf.getString("edittext_key3","").equals("")){
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setTitle("提示")
-                    .setMessage("设置信息未填完整，是否退出？")
-                    .setPositiveButton("退出", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            mIntent = new Intent(SettingActivity.this, WelcomeActivity.class);
-//                            startActivity(mIntent);
-                            finish();
-                        }
-                    })
-                    .setNegativeButton("取消",null)
-                    .create().show();
-        }else{
-            SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
-            SharedPreferences.Editor edit = preferences.edit();
-            edit.putString("version", "0");
-            edit.commit();
+        if(preference.getKey().equals("dect_settings")){//确定
+            SharedPreferences spf = getPreferenceScreen().getSharedPreferences();
+            if(spf.getString(Consts.LIST_KEY,"").equals("")||
+                    spf.getString("edittext_key2","").equals("")||spf.getString("edittext_key3","").equals("")){
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                dialog.setTitle("提示")
+                        .setMessage("设置信息未填完整，是否退出？")
+                        .setPositiveButton("退出", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("取消",null)
+                        .create().show();
+            }else{
+                SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
+                SharedPreferences.Editor edit = preferences.edit();
+                edit.putString("version", "0");
+                edit.commit();
 
-            mIntent = new Intent(SettingActivity.this, WelcomeActivity.class);
-            startActivity(mIntent);
-            finish();
+                mIntent = new Intent(SettingActivity.this, WelcomeActivity.class);
+                startActivity(mIntent);
+                finish();
+            }
+        }else if(preference.getKey().equals("version")){//版本更新
+            Post6.instance().getVersion();
         }
         return false;
+    }
+
+    @Subscribe
+    public void update(Update event){
+        int version = Integer.parseInt(event.versionCode);
+        if(version> Version.getVersionCode(this)){
+            UpdateFragment updateFragment = UpdateFragment.newInstance(event.url, event.name);
+            updateFragment.show(getFragmentManager(),getString(R.string.update));
+        }else{
+            Toast.makeText(this,"当前己是最新版",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

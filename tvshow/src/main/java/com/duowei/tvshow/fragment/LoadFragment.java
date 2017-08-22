@@ -178,7 +178,7 @@ public class LoadFragment extends AbsFragment {
         super.onDestroy();
         DownloadReceiver download = Aria.download(this);
         if(download!=null){
-            download.removeAllTask();
+            download.stopAllTask();
         }
     }
 }

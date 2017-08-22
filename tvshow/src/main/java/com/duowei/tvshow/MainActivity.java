@@ -2,8 +2,10 @@ package com.duowei.tvshow;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,10 +17,14 @@ import com.duowei.tvshow.contact.ConstsCode;
 import com.duowei.tvshow.contact.FileDir;
 import com.duowei.tvshow.event.FinishEvent;
 import com.duowei.tvshow.event.FinishMain;
+import com.duowei.tvshow.event.Update;
+import com.duowei.tvshow.fragment.UpdateFragment;
+import com.duowei.tvshow.httputils.Post6;
 import com.duowei.tvshow.image_video.ImageDir;
 import com.duowei.tvshow.image_video.PhotoSelectorActivity;
 import com.duowei.tvshow.service.BroadService;
 import com.duowei.tvshow.utils.CurrentTime;
+import com.duowei.tvshow.utils.Version;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.litepal.crud.DataSupport;
@@ -64,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mIntentFilter = new IntentFilter(ConstsCode.ACTION_START_HEART);
         mBroadCast = new ServiceBroadCast();
         registerReceiver(mBroadCast, mIntentFilter);
-
     }
 
     /**启用广播 */
@@ -89,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if(mIntentService!=null){
                 stopService(mIntentService);
             }
-//            unregisterReceiver(mBroadCast);
         }
     }
 

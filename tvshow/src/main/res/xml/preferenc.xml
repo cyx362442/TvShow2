@@ -72,20 +72,12 @@
             android:dialogTitle="呼叫中字体大小" />
     </PreferenceCategory>
     <PreferenceScreen
+        android:key="version"
+        android:title="版本更新"
+        />
+    <PreferenceScreen
         android:key="dect_settings"
         android:title="确定"
         android:summary="(请确定信息填写完整、正确)" >
     </PreferenceScreen>
-    <!--<PreferenceCategory android:title="Second Category">-->
-    <!--<EditTextPreference-->
-        <!--android:key="edittext_key"-->
-        <!--android:summary="edit summary"-->
-        <!--android:title="edit title" />-->
-    <!--<EditTextPreference-->
-        <!--android:key="num_key"-->
-        <!--android:defaultValue="0"-->
-        <!--android:summary="edit summary"-->
-        <!--android:numeric="integer"-->
-        <!--android:title="input number" />-->
-    <!--</PreferenceCategory>-->
 </PreferenceScreen>

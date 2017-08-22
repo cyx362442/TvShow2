@@ -4,10 +4,12 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -26,11 +28,14 @@ import com.duowei.tvshow.event.BrushCall;
 import com.duowei.tvshow.event.CallEvent;
 import com.duowei.tvshow.event.FinishEvent;
 import com.duowei.tvshow.event.FinishMain;
+import com.duowei.tvshow.event.Update;
 import com.duowei.tvshow.fragment.CallFragment;
+import com.duowei.tvshow.fragment.UpdateFragment;
 import com.duowei.tvshow.fragment.VideoFragment;
 import com.duowei.tvshow.httputils.Post6;
 import com.duowei.tvshow.httputils.Post7;
 import com.duowei.tvshow.sound.KeySound;
+import com.duowei.tvshow.utils.Version;
 import com.duowei.tvshow.view.TextSurfaceView;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
@@ -116,7 +121,8 @@ public class ShowActivity extends AppCompatActivity {
         mHomeReceiver = new HomeReceiver();
         IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         registerReceiver(mHomeReceiver,filter);
-
+        //检测版本更新
+        Post6.instance().getVersion();
     }
     /**设置屏占比*/
     private void setViewWeight() {
@@ -275,6 +281,26 @@ public class ShowActivity extends AppCompatActivity {
     public void BrushData(BrushCall event){
         mCallFragment.setListWait(event);
         isFinish=true;
+    }
+
+    @Subscribe
+    public void update(final Update event){
+        int version = Integer.parseInt(event.versionCode);
+        if(version> Version.getVersionCode(this)){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setIcon(R.mipmap.logo);
+            builder.setTitle("发现新版本，是否更新？");
+            builder.setMessage(event.message);
+            builder.setNegativeButton("取消",null);
+            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    UpdateFragment updateFragment = UpdateFragment.newInstance(event.url, event.name);
+                    updateFragment.show(getFragmentManager(),getString(R.string.update));
+                }
+            });
+            builder.create().show();
+        }
     }
 
     @Override

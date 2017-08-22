@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -171,7 +172,7 @@ public class WelcomeActivity extends AppCompatActivity{
     //删除文件夹和文件夹里面的文件
     public  void deleteDir() {
         File dir = new File(FileDir.getVideoName());
-        if (dir == null || !dir.exists() || !dir.isDirectory()){
+        if (dir == null || !dir.exists() || !dir.isDirectory()||dir.listFiles()==null){
         }else{
             for (File file : dir.listFiles()) {
                 if (file.isFile())
