@@ -69,6 +69,8 @@ public class ShowActivity extends AppCompatActivity {
     private Intent mIntent;
 
     private boolean isFinish=true;
+    private int count=60;
+    private Runnable run;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -282,11 +284,12 @@ public class ShowActivity extends AppCompatActivity {
         mCallFragment.setListWait(event);
         isFinish=true;
     }
-
+    //判断版本升级
     @Subscribe
     public void update(final Update event){
         int version = Integer.parseInt(event.versionCode);
         if(version> Version.getVersionCode(this)){
+            final Handler handler = new Handler();
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setIcon(R.mipmap.logo);
             builder.setTitle("发现新版本，是否更新？");
@@ -299,7 +302,21 @@ public class ShowActivity extends AppCompatActivity {
                     updateFragment.show(getFragmentManager(),getString(R.string.update));
                 }
             });
-            builder.create().show();
+            final AlertDialog show = builder.show();
+            handler.postDelayed(run=new Runnable() {
+                @Override
+                public void run() {
+                    if(count>0){
+                        count--;
+                        handler.postDelayed(run,1000);
+                    }else{
+                        if(show!=null){
+                            show.dismiss();
+                        }
+                        handler.removeCallbacks(run);
+                    }
+                }
+            },0);
         }
     }
 
