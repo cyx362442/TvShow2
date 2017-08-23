@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -30,7 +29,6 @@ import static android.content.Context.DOWNLOAD_SERVICE;
 public class UpdateFragment extends DialogFragment {
 
     private ProgressBar mPb;
-    private TextView mTvSize;
     private String SDPATH= Environment.getExternalStorageDirectory()+"/dwapp/";
     private DownloadManager mDownloadManager;
     private long mEnqueue;
@@ -52,7 +50,6 @@ public class UpdateFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View inflate = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_update, null);
         mPb = (ProgressBar) inflate.findViewById(R.id.pb);
-        mTvSize = (TextView) inflate.findViewById(R.id.tv_size);
         String url = getArguments().getString("url", "");
         mName = getArguments().getString("name", "");
 
