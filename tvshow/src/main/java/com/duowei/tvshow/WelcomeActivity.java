@@ -12,8 +12,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
-import com.arialyy.aria.core.Aria;
-import com.arialyy.aria.core.download.DownloadReceiver;
 import com.duowei.tvshow.bean.LoadFile;
 import com.duowei.tvshow.bean.OneDataBean;
 import com.duowei.tvshow.bean.ZoneTime;

@@ -1,7 +1,5 @@
 package com.duowei.tvshow.httputils;
 
-import android.util.Log;
-
 import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
 import com.duowei.tvshow.utils.Base64;

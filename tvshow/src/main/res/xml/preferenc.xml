@@ -3,7 +3,7 @@
     <PreferenceCategory android:title="设置">
         <EditTextPreference
             android:key="edittext_key1"
-            android:summary="ai.wxdw.top"
+            android:summary="@string/setting_url"
             android:inputType="textUri"
             android:title="服务器地址" />
         <EditTextPreference
