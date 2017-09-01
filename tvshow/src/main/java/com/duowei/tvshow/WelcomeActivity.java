@@ -99,6 +99,10 @@ public class WelcomeActivity extends AppCompatActivity{
             }
             @Override
             public void onResponse(String response) {
+                if(response.contains("微信公众号")){
+                    Toast.makeText(WelcomeActivity.this,"微信公众号有误",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 JsonParser jsonParser = new JsonParser();
                 JsonElement jsonElement =  jsonParser.parse(response);
                 boolean jsonObject = jsonElement.isJsonObject();
