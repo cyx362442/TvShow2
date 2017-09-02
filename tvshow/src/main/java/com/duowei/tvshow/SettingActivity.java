@@ -12,6 +12,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.duowei.tvshow.contact.Consts;
@@ -77,8 +78,14 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
 
         String edittext_key1 = sharedPreferences.getString("edittext_key1", "");
         String url= TextUtils.isEmpty(edittext_key1)?getString(R.string.setting_url):edittext_key1;
+        mEdit.putString("wurl",url);
+        String edittext_key2 = sharedPreferences.getString("edittext_key2", "");
+        String weid=TextUtils.isEmpty(edittext_key2)?getString(R.string.weid):edittext_key2;
+        mEdit.putString("weid",weid);
+        mEdit.commit();
+
         mEtPreference1.setSummary(url);
-        mEtPreference2.setSummary(sharedPreferences.getString("edittext_key2", ""));
+        mEtPreference2.setSummary(weid);
         mEtPreference3.setSummary(sharedPreferences.getString("edittext_key3", ""));
         mCheckPreference.setChecked(sharedPreferences.getBoolean("checkbox_key",true));
         mListKey2.setSummary(sharedPreferences.getString("list_key2","关闭"));
@@ -102,15 +109,11 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals("edittext_key1")) { //服务器地址
-//            mEtPreference1.setSummary(sharedPreferences.getString(key, "20"));
-//            mEdit.putString("wurl",sharedPreferences.getString(key, "20"));
+            mEtPreference1.setSummary(sharedPreferences.getString(key, "20"));
+            mEdit.putString("wurl",sharedPreferences.getString(key, "20"));
         }else if(key.equals("edittext_key2")){//微信ID
-            String edittext_key1 = sharedPreferences.getString("edittext_key1", "");
-            String url= TextUtils.isEmpty(edittext_key1)?getString(R.string.setting_url):edittext_key1;
-            mEdit.putString("wurl",url);
-
-            mEtPreference2.setSummary(sharedPreferences.getString(key, "20"));
-            mEdit.putString("weid",sharedPreferences.getString(key, "20"));
+            mEtPreference2.setSummary(sharedPreferences.getString(key,"20"));
+            mEdit.putString("weid",sharedPreferences.getString(key,"20"));
         }else if(key.equals("edittext_key3")){//门店ID
             mEtPreference3.setSummary(sharedPreferences.getString(key, "20"));
             mEdit.putString("storeid",sharedPreferences.getString(key, "20"));
@@ -146,8 +149,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
     public boolean onPreferenceClick(Preference preference) {
         if(preference.getKey().equals("dect_settings")){//确定
             SharedPreferences spf = getPreferenceScreen().getSharedPreferences();
-            if(spf.getString(Consts.LIST_KEY,"").equals("")||
-                    spf.getString("edittext_key2","").equals("")||spf.getString("edittext_key3","").equals("")){
+            if(spf.getString(Consts.LIST_KEY,"").equals("")||spf.getString("edittext_key3","").equals("")){
                 AlertDialog.Builder dialog = new AlertDialog.Builder(this);
                 dialog.setTitle("提示")
                         .setMessage("设置信息未填完整，是否退出？")
@@ -169,7 +171,8 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
                 startActivity(mIntent);
                 finish();
             }
-        }else if(preference.getKey().equals("version")){//版本更新
+        }
+        else if(preference.getKey().equals("version")){//版本更新
             Post6.instance().getVersion();
         }
         return false;

@@ -8,7 +8,7 @@
             android:title="服务器地址" />
         <EditTextPreference
             android:key="edittext_key2"
-            android:summary="edit summary"
+            android:summary="@string/weid"
             android:numeric="integer"
             android:title="微信ID" />
         <EditTextPreference
