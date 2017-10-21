@@ -187,7 +187,7 @@ public class VideoFullActivity extends AppCompatActivity{
                                 mTts.setParameter(SpeechConstant.PITCH, "50");
                                 //设置合成音量
                                 mTts.setParameter(SpeechConstant.VOLUME, "100");
-                                mTts.startSpeaking(call.getTableno(), null);
+                                mTts.startSpeaking("请"+call.getTableno()+"号到前台取餐。", null);
                             }else if(mSoundStytle.equals(getString(R.string.onLine))){
                                 soundOffLine(call);
                             }
